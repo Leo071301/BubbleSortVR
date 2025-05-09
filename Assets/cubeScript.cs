@@ -4,7 +4,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class CubeUtilDemo : MonoBehaviour
+public class cubeScript : MonoBehaviour
 {
     public void addTextToCube(GameObject object_in, String text_in)
     {
