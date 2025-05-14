@@ -1,9 +1,9 @@
 using SpatialSys.UnitySDK;
 using System;
 using System.Collections.Generic;
-using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class cubeScript : MonoBehaviour
 {
@@ -12,7 +12,7 @@ public class cubeScript : MonoBehaviour
     {
         // create child text object
         GameObject text_obj = new GameObject(text_in);
-        TextMeshPro text = text_obj.AddComponent<TextMeshPro>();
+        Text text = text_obj.AddComponent<Text>();
         RectTransform rectTransform = text_obj.GetComponent<RectTransform>();
 
         text_obj.transform.SetParent(object_in.transform);
@@ -28,7 +28,7 @@ public class cubeScript : MonoBehaviour
 
         // create another lol
         GameObject text_obj2 = new GameObject(text_in);
-        TextMeshPro text2 = text_obj2.AddComponent<TextMeshPro>();
+        Text text2 = text_obj2.AddComponent<Text>();
         RectTransform rectTransform2 = text_obj2.GetComponent<RectTransform>();
 
         text_obj2.transform.SetParent(object_in.transform);
@@ -106,9 +106,9 @@ public class cubeScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        const int ARRAYSIZE = 8;
-        const int TOTAL_LENGTH = 6;
-        Vector3 list_position = new Vector3(0,1,-6f);
+        const int ARRAYSIZE = 14;
+        const int TOTAL_LENGTH = 14;
+        Vector3 list_position = new Vector3(-37,3,-19);
         List<GameObject> cubes = createCubeList(ARRAYSIZE);
 
 
