@@ -1,9 +1,7 @@
-using SpatialSys.UnitySDK;
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class cubeScript : MonoBehaviour
 {
@@ -12,31 +10,31 @@ public class cubeScript : MonoBehaviour
     {
         // create child text object
         GameObject text_obj = new GameObject(text_in);
-        Text text = text_obj.AddComponent<Text>();
+        TextMeshPro text = text_obj.AddComponent<TextMeshPro>();
         RectTransform rectTransform = text_obj.GetComponent<RectTransform>();
 
         text_obj.transform.SetParent(object_in.transform);
-        rectTransform.position = new Vector3(-0.15f, 0.05f, 0.26f);
-        rectTransform.sizeDelta = new Vector2(0.5f, 0.5f);
+        rectTransform.position = new Vector3(-0.25f, 0.05f, 0.52f);
+        rectTransform.sizeDelta = new Vector2(1, 1);
         rectTransform.localScale = new Vector3(
             -rectTransform.localScale.x,
             rectTransform.localScale.x,
             rectTransform.localScale.z);
         text.text = text_in;
-        text.fontSize = 5;
-        text.color = new Color(77, 65, 66); // greyish red
+        text.fontSize = 10;
+        text.color = Color.black;
 
         // create another lol
         GameObject text_obj2 = new GameObject(text_in);
-        Text text2 = text_obj2.AddComponent<Text>();
+        TextMeshPro text2 = text_obj2.AddComponent<TextMeshPro>();
         RectTransform rectTransform2 = text_obj2.GetComponent<RectTransform>();
 
         text_obj2.transform.SetParent(object_in.transform);
-        rectTransform2.position = new Vector3(0.12f, 0.05f, -0.26f);
-        rectTransform2.sizeDelta = new Vector2(0.5f, 0.5f);
+        rectTransform2.position = new Vector3(0.25f, 0.05f, -0.52f);
+        rectTransform2.sizeDelta = new Vector2(1, 1);
         text2.text = text_in;
-        text2.fontSize = 5;
-        text2.color = new Color(77, 65, 66); // greyish red
+        text2.fontSize = 10;
+        text2.color = Color.black;
 
     }
 
@@ -56,11 +54,10 @@ public class cubeScript : MonoBehaviour
             GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
             MeshFilter m_filter = cube.GetComponent<MeshFilter>();
             MeshRenderer m_renderer = cube.GetComponent<MeshRenderer>();
-            
+
             // decorate cube
             cube.name = "Cube " + index;
             m_renderer.material.color = Color.white;
-            cube.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
             // add text
             addTextToCube(cube, index.ToString());
@@ -68,7 +65,7 @@ public class cubeScript : MonoBehaviour
             // add noise
             System.Random noise = new System.Random();
             cube.transform.Rotate(new Vector3(
-                noise.Next(-3,3),
+                noise.Next(-3, 3),
                 noise.Next(-3, 3),
                 noise.Next(-3, 3)));
 
@@ -106,9 +103,9 @@ public class cubeScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        const int ARRAYSIZE = 14;
-        const int TOTAL_LENGTH = 14;
-        Vector3 list_position = new Vector3(-37,3,-19);
+        const int ARRAYSIZE = 8;
+        const int TOTAL_LENGTH = 15;
+        Vector3 list_position = new Vector3(-37, 3, -19);
         List<GameObject> cubes = createCubeList(ARRAYSIZE);
 
 
@@ -119,6 +116,7 @@ public class cubeScript : MonoBehaviour
     void Update()
     {
 
-        
+
     }
 }
+
