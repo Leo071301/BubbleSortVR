@@ -90,7 +90,7 @@ public class cubeScript : MonoBehaviour
 
             // offset each cube
             cube_list[i].transform.position =
-                new Vector3((start_pos.x - half_length) + (spacing * i),
+                new Vector3((start_pos.x + half_length) - (spacing * i),
                 start_pos.y,
                 start_pos.z);
 
@@ -98,6 +98,7 @@ public class cubeScript : MonoBehaviour
     }
 
 
+    List<GameObject> bubblesort_cubes
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -106,10 +107,9 @@ public class cubeScript : MonoBehaviour
         const int ARRAYSIZE = 8;
         const int TOTAL_LENGTH = 15;
         Vector3 list_position = new Vector3(-37, 3, -19);
-        List<GameObject> cubes = createCubeList(ARRAYSIZE);
+        bubblesort_cubes = createCubeList(ARRAYSIZE);
 
-
-        positionCubeList(cubes, list_position, TOTAL_LENGTH);
+        positionCubeList(bubblesort_cubes, list_position, TOTAL_LENGTH);
     }
 
     // Update is called once per frame
