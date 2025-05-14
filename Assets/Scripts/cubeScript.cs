@@ -1,7 +1,9 @@
+
 using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class cubeScript : MonoBehaviour
 {
@@ -97,8 +99,45 @@ public class cubeScript : MonoBehaviour
         }
     }
 
+    /*
+     * Move cube from it's current postion to the destination vector
+     * Speed and time can be readily modified to your liking
+     * Returns False - if destination reached, 'false' because no need to keep invoking this function
+     * Returns True - if not reached yet, 'true' because you will need to keep invoking this function
+     */
+    public bool moveCube(GameObject cube, Vector3 destination)
+    {
+        // destination reached? no need to continue
+        if (cube.transform.position == destination) return false;
 
-    List<GameObject> bubblesort_cubes
+        // define variables
+        Vector3 velocity = Vector3.zero;
+        float move_time = Time.deltaTime * 8; // seconds
+
+        // move
+        cube.transform.position = Vector3.SmoothDamp(cube.transform.position, destination, ref velocity, move_time);
+        return true;
+
+    }
+
+    public bool swapCubes(List<GameObject> cube_list, int first_index, int second_index)
+    {
+        // this is broken right now lol rip
+        GameObject cube1 = cube_list[first_index];
+        GameObject cube2 = cube_list[second_index];
+
+        if (moveCube(cube1, cube1.transform.position + Vector3.up)) return false;
+
+        if (moveCube(cube2, cube1.transform.position + Vector3.down)) return false;
+
+
+
+        return true;
+
+    }
+
+
+    List<GameObject> bubblesort_cubes;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -116,7 +155,6 @@ public class cubeScript : MonoBehaviour
     void Update()
     {
 
-
+        swapCubes(bubblesort_cubes, 0, 3);
     }
 }
-
