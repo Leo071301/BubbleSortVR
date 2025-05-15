@@ -226,16 +226,19 @@ public class cubeScript : MonoBehaviour
      *
      * * * * * * * * * * * * * * * * * * * * * * * *
      */
-
+    float TimeElapsedTotal = 0;
+    
     // Uses Sinusoidal functions to impliment floating behaviour
     public void floatCubes(List<GameObject> cube_list)
     {
         for (int i = 0; i < cube_list.Count; i++)
         {
+            TimeElapsedTotal += Time.deltaTime;
+            
             cube_list[i].transform.position = new Vector3(
                 cube_list[i].transform.position.x,
-                cube_list[i].transform.position.y + Mathf.Sin(Time.time + i) / 3000,
-                cube_list[i].transform.position.z + Mathf.Sin(Time.time + i) / 3000);
+                cube_list[i].transform.position.y + Mathf.Sin(TimeElapsedTotal + i) / 3000,
+                cube_list[i].transform.position.z + Mathf.Sin(TimeElapsedTotal + i) / 3000);
         }
     }
 
@@ -259,9 +262,7 @@ public class cubeScript : MonoBehaviour
 
         if (Input.GetMouseButtonDown(1))
         {
-            // generate random number
-            System.Random noise = new System.Random();
-            StartCoroutine(swapCubesTest(bubblesort_cubes, 1, 4));
+            StartCoroutine(swapCubesTest(bubblesort_cubes, 2, 4));
         }
     }
 }
