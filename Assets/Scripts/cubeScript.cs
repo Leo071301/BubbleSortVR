@@ -122,7 +122,7 @@ public class cubeScript : MonoBehaviour
 
 
     // Not the best practice but meh
-    bool swap_isDone = false;
+    bool move_isDone = false;
 
 
     /*
@@ -135,7 +135,7 @@ public class cubeScript : MonoBehaviour
         // define variables
         float move_time = Time.deltaTime * 4; // seconds
         float fTHRESHOLD = 0.1f;
-        swap_isDone = false;
+        move_isDone = false;
 
         while (Vector3.Distance(cube.transform.localPosition, destination) > fTHRESHOLD)
         {
@@ -143,7 +143,7 @@ public class cubeScript : MonoBehaviour
             yield return null;  // dont return anything
         }
 
-        swap_isDone = true;
+        move_isDone = true;
         yield return null;
 
         // mabye used later
@@ -156,7 +156,7 @@ public class cubeScript : MonoBehaviour
      * This function is a C# Generator which helps simulate Animations https://stackoverflow.com/a/55289109
      * It swaps two cubes based off the given index
      * Uses yield statements to return, and at next frame - pick up where it left off
-     * Also invokes co-routine moveCube() where the 'swap_isDone' flag will be set, and the next animation can be played.
+     * Also invokes co-routine moveCube() where the 'move_isDone' flag will be set, and the next animation can be played.
      */
     public IEnumerator swapCubesTest(List<GameObject> cube_list, int first_index, int second_index)
     {
@@ -170,7 +170,7 @@ public class cubeScript : MonoBehaviour
         Vector3 pos_above =
             new Vector3(cube1.transform.position.x, cube1.transform.position.y + 1.5f, cube1.transform.position.z);
         StartCoroutine(moveCubeTest(cube1, pos_above));
-        while (!swap_isDone)
+        while (!move_isDone)
         {
             yield return null;
         }
@@ -180,7 +180,7 @@ public class cubeScript : MonoBehaviour
         Vector3 pos_below =
             new Vector3(cube2.transform.position.x, cube2.transform.position.y - 1.5f, cube2.transform.position.z);
         StartCoroutine(moveCubeTest(cube2, pos_below));
-        while (!swap_isDone)
+        while (!move_isDone)
         {
             yield return null;
         }
@@ -189,7 +189,7 @@ public class cubeScript : MonoBehaviour
         Vector3 pos1_slideOver =
             new Vector3(cube2_startPos.x, cube1.transform.position.y, cube2_startPos.z);
         StartCoroutine(moveCubeTest(cube1, pos1_slideOver));
-        while (!swap_isDone)
+        while (!move_isDone)
         {
             yield return null;
         }
@@ -199,7 +199,7 @@ public class cubeScript : MonoBehaviour
         Vector3 pos2_slideOver =
             new Vector3(cube1_startPos.x, cube2.transform.position.y, cube1_startPos.z);
         StartCoroutine(moveCubeTest(cube2, pos2_slideOver));
-        while (!swap_isDone)
+        while (!move_isDone)
         {
             yield return null;
         }
@@ -207,13 +207,13 @@ public class cubeScript : MonoBehaviour
 
         /******* put cube1 where cube2 originaly was *******/
         StartCoroutine(moveCubeTest(cube1, cube2_startPos));
-        while (!swap_isDone)
+        while (!move_isDone)
         {
             yield return null;
         }
         /******* put cube2 where cube1 originaly was *******/
         StartCoroutine(moveCubeTest(cube2, cube1_startPos));
-        while (!swap_isDone)
+        while (!move_isDone)
         {
             yield return null;
         }
