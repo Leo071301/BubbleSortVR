@@ -4,18 +4,27 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
+
 
 public class cubeScript : MonoBehaviour
 {
     /*
      *  Member Variables
      */
-    List<GameObject> bubblesort_cubes;
+
+    [SerializeField] public Vector3 bubble_sort_pos;        // Position
+    [SerializeField] public List<int> bubble_sort_numbers;  // List given thru the 'inspector tab', used to create List of GameObjects
+    [SerializeField] public GameObject Interactable_bubble;// pass in Interactable used to triggle the animation, will disable the gameobject during...and re-enable it once done
+
+    [NonSerialized]
+    private List<GameObject> bubblesort_cubes = null;       // Cubes created, positioned, and programmed by this script
+
 
 
     /* * * * * * * * * * * * * * * * * * * * * * * *
-     *
+     * 
      *  Functions to Create and Configure Cubes
      *
      * * * * * * * * * * * * * * * * * * * * * * * *
@@ -114,7 +123,7 @@ public class cubeScript : MonoBehaviour
 
 
     /* * * * * * * * * * * * * * * * * * * * * * * *
-     *
+     * 
      *  C# Generators and Unity-Coroutines
      *
      * * * * * * * * * * * * * * * * * * * * * * * *
@@ -122,7 +131,7 @@ public class cubeScript : MonoBehaviour
 
 
     // Not the best practice but meh
-    bool move_isDone = false;
+    bool swap_isDone = false;
 
 
     /*
@@ -133,9 +142,9 @@ public class cubeScript : MonoBehaviour
     public IEnumerator moveCubeTest(GameObject cube, Vector3 destination)
     {
         // define variables
-        float move_time = Time.deltaTime * 4; // seconds
+        float move_time = Time.deltaTime * 5; // seconds
         float fTHRESHOLD = 0.1f;
-        move_isDone = false;
+        swap_isDone = false;
 
         while (Vector3.Distance(cube.transform.localPosition, destination) > fTHRESHOLD)
         {
@@ -143,7 +152,7 @@ public class cubeScript : MonoBehaviour
             yield return null;  // dont return anything
         }
 
-        move_isDone = true;
+        swap_isDone = true;
         yield return null;
 
         // mabye used later
@@ -156,7 +165,7 @@ public class cubeScript : MonoBehaviour
      * This function is a C# Generator which helps simulate Animations https://stackoverflow.com/a/55289109
      * It swaps two cubes based off the given index
      * Uses yield statements to return, and at next frame - pick up where it left off
-     * Also invokes co-routine moveCube() where the 'move_isDone' flag will be set, and the next animation can be played.
+     * Also invokes co-routine moveCube() where the 'swap_isDone' flag will be set, and the next animation can be played.
      */
     public IEnumerator swapCubesTest(List<GameObject> cube_list, int first_index, int second_index)
     {
@@ -170,7 +179,7 @@ public class cubeScript : MonoBehaviour
         Vector3 pos_above =
             new Vector3(cube1.transform.position.x, cube1.transform.position.y + 1.5f, cube1.transform.position.z);
         StartCoroutine(moveCubeTest(cube1, pos_above));
-        while (!move_isDone)
+        while (!swap_isDone)
         {
             yield return null;
         }
@@ -180,7 +189,7 @@ public class cubeScript : MonoBehaviour
         Vector3 pos_below =
             new Vector3(cube2.transform.position.x, cube2.transform.position.y - 1.5f, cube2.transform.position.z);
         StartCoroutine(moveCubeTest(cube2, pos_below));
-        while (!move_isDone)
+        while (!swap_isDone)
         {
             yield return null;
         }
@@ -189,7 +198,7 @@ public class cubeScript : MonoBehaviour
         Vector3 pos1_slideOver =
             new Vector3(cube2_startPos.x, cube1.transform.position.y, cube2_startPos.z);
         StartCoroutine(moveCubeTest(cube1, pos1_slideOver));
-        while (!move_isDone)
+        while (!swap_isDone)
         {
             yield return null;
         }
@@ -199,7 +208,7 @@ public class cubeScript : MonoBehaviour
         Vector3 pos2_slideOver =
             new Vector3(cube1_startPos.x, cube2.transform.position.y, cube1_startPos.z);
         StartCoroutine(moveCubeTest(cube2, pos2_slideOver));
-        while (!move_isDone)
+        while (!swap_isDone)
         {
             yield return null;
         }
@@ -207,62 +216,108 @@ public class cubeScript : MonoBehaviour
 
         /******* put cube1 where cube2 originaly was *******/
         StartCoroutine(moveCubeTest(cube1, cube2_startPos));
-        while (!move_isDone)
+        while (!swap_isDone)
         {
             yield return null;
         }
         /******* put cube2 where cube1 originaly was *******/
         StartCoroutine(moveCubeTest(cube2, cube1_startPos));
-        while (!move_isDone)
+        while (!swap_isDone)
         {
             yield return null;
         }
 
     }
 
+    /*
+     * This Generator will change the color of 'obj' instantly to color_in ( a pulse )
+     * And gradually turn its back to its original color
+     * https://www.youtube.com/watch?v=pbU2tInJTOQ
+     */
+    public IEnumerator PulseHighlight(GameObject obj, Color color_in)
+    {
+        float timeElapsed = 0f;
+
+        // the target color will be it's current 
+        Color current_color = color_in;
+
+        MeshRenderer m_renderer = obj.GetComponent<MeshRenderer>();
+        Color target_color = m_renderer.material.color;
+
+        // keep changing colors untill target color is reached
+        while (timeElapsed < 1.5f && m_renderer != null)
+        {
+            timeElapsed += Time.deltaTime;
+
+            //m_renderer.material.color = Color.Lerp(tartet_color, current_color, Mathf.PingPong(timeElapsed , 1));
+            m_renderer.material.color = Color.Lerp(current_color, target_color, timeElapsed);
+            yield return null;
+        }
+
+    }
+
+    public IEnumerator bubbleSort()
+    {
+        Interactable_bubble.SetActive(false);
+
+        StartCoroutine(swapCubesTest(bubblesort_cubes, 2, 5));
+        StartCoroutine(PulseHighlight(bubblesort_cubes[2], Color.cyan));
+        StartCoroutine(PulseHighlight(bubblesort_cubes[5], Color.cyan));
+        yield return null;
+        yield return null;
+        yield return null;
+        yield return null;
+        yield return null;
+        yield return null;
+        yield return null;
+        Interactable_bubble.SetActive(true);
+
+    }
+
     /* * * * * * * * * * * * * * * * * * * * * * * *
-     *
+     * 
      *  Misc. Functions
      *
      * * * * * * * * * * * * * * * * * * * * * * * *
      */
-    float TimeElapsedTotal = 0;
-    
+
     // Uses Sinusoidal functions to impliment floating behaviour
     public void floatCubes(List<GameObject> cube_list)
     {
+        // Scale factor of 3000 for unity
+        // Scale factor of 300 for Spatial VR
+        const int SCALE = 300;
+
         for (int i = 0; i < cube_list.Count; i++)
         {
-            TimeElapsedTotal += Time.deltaTime;
-            
             cube_list[i].transform.position = new Vector3(
                 cube_list[i].transform.position.x,
-                cube_list[i].transform.position.y + Mathf.Sin(TimeElapsedTotal + i) / 3000,
-                cube_list[i].transform.position.z + Mathf.Sin(TimeElapsedTotal + i) / 3000);
+                cube_list[i].transform.position.y + Mathf.Sin(Time.time + i) / SCALE,
+                cube_list[i].transform.position.z + Mathf.Sin(Time.time + i) / SCALE * 2);
         }
     }
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    // Invoked by Spatial SDK Interactable
+    public void BubbleSortEvent()
     {
         const int ARRAYSIZE = 8;
         const int TOTAL_LENGTH = 15;
-        Vector3 list_position = new Vector3(-37, 3, -19);
         bubblesort_cubes = createCubeList(ARRAYSIZE);
 
-        positionCubeList(bubblesort_cubes, list_position, TOTAL_LENGTH);
+        positionCubeList(bubblesort_cubes, bubble_sort_pos, TOTAL_LENGTH);
+
+        StartCoroutine(bubbleSort());
     }
+
+
 
     // Update is called once per frame
     void Update()
     {
-        floatCubes(bubblesort_cubes);
+        // Only when the cubes exist (created on event)
+        if (bubblesort_cubes != null)
+            floatCubes(bubblesort_cubes);
 
-
-        if (Input.GetMouseButtonDown(1))
-        {
-            StartCoroutine(swapCubesTest(bubblesort_cubes, 2, 4));
-        }
     }
 }
