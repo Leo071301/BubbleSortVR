@@ -1,0 +1,283 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 
+ *          Author: Eliseo D.
+ *          Date: May 2025
+ * 
+ * CubeUtility - Is a Static Class which impliments functions
+ *              to help set-up and perform animations with 
+ *              Unity's 'Cube Primitive' GameObjects
+ *      
+  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*/
+
+public class CubeUtility : MonoBehaviour
+{
+    /* * * * * * * * * * * * * * * * * * * * * * * *
+     * 
+     *  Functions to Create and Configure Cubes
+     *
+     * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    public static void addTextToCube(GameObject object_in, String text_in)
+    {
+        // create child text object
+        GameObject text_obj = new GameObject(text_in);
+        TextMeshPro text = text_obj.AddComponent<TextMeshPro>();
+        RectTransform rectTransform = text_obj.GetComponent<RectTransform>();
+
+        text_obj.transform.SetParent(object_in.transform);
+        rectTransform.position = new Vector3(-0.25f, 0.05f, 0.52f);
+        rectTransform.sizeDelta = new Vector2(1, 1);
+        // reflect text ~ so that its not unreadable (like a mirror)
+        rectTransform.localScale = new Vector3(
+            -rectTransform.localScale.x,
+            rectTransform.localScale.x,
+            rectTransform.localScale.z);
+        text.text = text_in;
+        text.fontSize = 10;
+        text.color = Color.black;
+
+        // create another text lol
+        GameObject text_obj2 = new GameObject(text_in);
+        TextMeshPro text2 = text_obj2.AddComponent<TextMeshPro>();
+        RectTransform rectTransform2 = text_obj2.GetComponent<RectTransform>();
+
+        text_obj2.transform.SetParent(object_in.transform);
+        rectTransform2.position = new Vector3(0.25f, 0.05f, -0.52f);
+        rectTransform2.sizeDelta = new Vector2(1, 1);
+        text2.text = text_in;
+        text2.fontSize = 10;
+        text2.color = Color.black;
+
+    }
+
+    /*
+     * Return a C# List of <GameObject>'s with size_in to determine list size
+     * Apply mesh filters and renders accordingly, can be readily modified.
+     */
+    public static List<GameObject> createCubeList(List<int> list_in)
+    {
+        List<GameObject> cube_array = new List<GameObject>();
+
+        for (int i = 0; i < list_in.Count; i++)
+        {
+            int index = i + 1;
+
+
+            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            MeshFilter m_filter = cube.GetComponent<MeshFilter>();
+            MeshRenderer m_renderer = cube.GetComponent<MeshRenderer>();
+
+            // decorate cube
+            cube.name = list_in[i].ToString();     // the name will be the number itself
+            m_renderer.material.color = Color.white;
+
+            // add text
+            addTextToCube(cube, list_in[i].ToString());
+
+            // add noise
+            System.Random noise = new System.Random();
+            cube.transform.Rotate(new Vector3(
+                noise.Next(-3, 3),
+                noise.Next(-3, 3),
+                noise.Next(-3, 3)));
+
+            cube_array.Add(cube);
+        }
+
+        return cube_array;
+    }
+
+    /*
+     * Given a list of cubes
+     * This will poisition each cube evenly based off of the total length given,
+     * its 'Transform' position, and
+     * its 'Transform' rotation. 
+     * 
+     * invokingObject - is the 'this' pointer, the unity object which has the script attached.
+     */
+    public static void positionCubeList(List<GameObject> cube_list, float total_length, MonoBehaviour invokingObject)
+    {
+        // simple calculations
+        float half_length = total_length / 2;
+        float spacing = total_length / cube_list.Count;
+
+        // fetching component info
+        // y-axis angle in radiants, will allow us to find the rotation of the X-Y plane. Wierd right?!
+        float angle_theta = invokingObject.transform.eulerAngles.y; // degrees
+        float angle_theta_r = angle_theta * Mathf.PI / 180.0f;      // radiants
+
+        Vector3 start_pos = invokingObject.transform.localPosition; // fetch it's transform
+
+        for (int i = 0; i < cube_list.Count; i++)
+        {
+            // rotate each cube
+            cube_list[i].transform.Rotate(new Vector3(0, angle_theta * -1, 0));
+
+            // yay math
+            // image a unit circle. Find where to position each cube - starting from 1 side of the unite circle, and ending at the other
+            cube_list[i].transform.position =
+                new Vector3((start_pos.x - half_length * Mathf.Cos(angle_theta_r)) + (spacing * Mathf.Cos(angle_theta_r) * i),
+                            start_pos.y,
+                            (start_pos.z - half_length * Mathf.Sin(angle_theta_r)) + (spacing * Mathf.Sin(angle_theta_r) * i));
+        }
+    }
+
+
+
+    /* * * * * * * * * * * * * * * * * * * * * * * *
+     * 
+     *  C# Generators and Unity-Coroutines
+     *
+     * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    /*
+     * Move cube from it's current postion to the destination vector
+     * Move Timing and distance threshold can be readily modified to your liking
+     */
+    public static IEnumerator moveCube(GameObject cube, Vector3 destination)
+    {
+        // define variables
+        float move_time = Time.deltaTime * 5; // seconds
+        float fTHRESHOLD = 0.1f;
+
+        while (Vector3.Distance(cube.transform.localPosition, destination) > fTHRESHOLD)
+        {
+            cube.transform.position = Vector3.Lerp(cube.transform.localPosition, destination, move_time);
+            yield return null;  // pause, and come back next frame
+        }
+    }
+
+
+    /*
+     * This function is a C# Generator which helps simulate Animations https://stackoverflow.com/a/55289109
+     * It swaps two cubes based off the given index
+     * Uses yield statements to return, and at next frame - pick up where it left off
+     * Also invokes co-routine moveCube() where the 'swap_isDone' flag will be set, and the next animation can be played.
+     * 
+     * "MonoBehaviour invokingClass" passes in the caller 'this' pointer, REQUIRED to use Co-Routines
+     */
+    public static IEnumerator swapCubesVertically(List<GameObject> cube_list, int first_index, int second_index, MonoBehaviour invokingClass)
+    {
+        GameObject cube1 = cube_list[first_index];
+        GameObject cube2 = cube_list[second_index];
+
+        Vector3 cube1_startPos = cube1.transform.position;
+        Vector3 cube2_startPos = cube2.transform.position;
+
+        /******* store position above cube 1 *******/
+        Vector3 pos_above =
+            new Vector3(cube1.transform.position.x, cube1.transform.position.y + 1.5f, cube1.transform.position.z);
+        yield return invokingClass.StartCoroutine(moveCube(cube1, pos_above));
+
+
+        /******* store position below cube 2 *******/
+        Vector3 pos_below =
+            new Vector3(cube2.transform.position.x, cube2.transform.position.y - 1.5f, cube2.transform.position.z);
+        yield return invokingClass.StartCoroutine(moveCube(cube2, pos_below));
+ 
+
+        /******* store position where cube 1 will slide over to *******/
+        Vector3 pos1_slideOver =
+            new Vector3(cube2_startPos.x, cube1.transform.position.y, cube2_startPos.z);
+        yield return invokingClass.StartCoroutine(moveCube(cube1, pos1_slideOver));
+        
+
+        /******* store position where cube 2 will slide over to *******/
+        Vector3 pos2_slideOver =
+            new Vector3(cube1_startPos.x, cube2.transform.position.y, cube1_startPos.z);
+        yield return invokingClass.StartCoroutine(moveCube(cube2, pos2_slideOver));
+
+
+        /******* put cube1 where cube2 originaly was *******/
+        yield return invokingClass.StartCoroutine(moveCube(cube1, cube2_startPos));
+        
+
+        /******* put cube2 where cube1 originaly was *******/
+        yield return invokingClass.StartCoroutine(moveCube(cube2, cube1_startPos));
+    }
+
+    /*
+    * Same as 'swapCubesVertically' 
+    * but less steps. Swaps positions directly
+    */
+    public static IEnumerator swapCubesHorizontally(List<GameObject> cube_list, int first_index, int second_index, MonoBehaviour invokingClass)
+    {
+        GameObject cube1 = cube_list[first_index];
+        GameObject cube2 = cube_list[second_index];
+
+        Vector3 cube1_startPos = cube1.transform.position;
+        Vector3 cube2_startPos = cube2.transform.position;
+
+        /******* put cube1 where cube2 originaly was *******/
+        invokingClass.StartCoroutine(moveCube(cube1, cube2_startPos));
+
+
+        /******* put cube2 where cube1 originaly was *******/
+        yield return invokingClass.StartCoroutine(moveCube(cube2, cube1_startPos));
+    }
+
+    /*
+     * This Generator will change the color of 'obj' instantly to color_in ( a pulse )
+     * And gradually turn its back to its original color
+     * 'highlight_time' is 1.5 Seconds by default, You can pass in a longer time and the HighLight animation will last longer
+     * https://www.youtube.com/watch?v=pbU2tInJTOQ
+     */
+    public static IEnumerator PulseHighlight(GameObject obj, Color color_in, float highlight_time = 1.5f)
+    {
+        float timeElapsed = 0f;
+
+        // the target color will be it's current 
+        Color current_color = color_in;
+
+        MeshRenderer m_renderer = obj.GetComponent<MeshRenderer>();
+        Color target_color = m_renderer.material.color;
+
+        // keep changing colors untill target color is reached
+        while (timeElapsed < highlight_time && m_renderer != null)
+        {
+            timeElapsed += Time.deltaTime * 1.5f / highlight_time;  
+
+            //m_renderer.material.color = Color.Lerp(tartet_color, current_color, Mathf.PingPong(timeElapsed , 1));
+            m_renderer.material.color = Color.Lerp(current_color, target_color, timeElapsed);
+            yield return null;
+        }
+
+    }
+
+
+    /* * * * * * * * * * * * * * * * * * * * * * * *
+     * 
+     *  Good-To-Have Behaviour
+     *
+     * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    // Uses Sinusoidal functions to impliment floating behaviour
+    public static void floatCubes(List<GameObject> cube_list)
+    {
+        // Scale factor of 3000 for Unity
+        // Scale factor of 300 for Spatial VR
+        const int SCALE = 3000;
+
+        for (int i = 0; i < cube_list.Count; i++)
+        {
+            cube_list[i].transform.position = new Vector3(
+                cube_list[i].transform.position.x,
+                cube_list[i].transform.position.y + Mathf.Sin(Time.time + i) / SCALE,
+                cube_list[i].transform.position.z + Mathf.Sin(Time.time + i) / SCALE * 2);
+        }
+    }
+}
+
+// BIG Credit to Dev Log for this wonderfull Design Aspect regarding Co-Routines
+// https://onewheelstudio.com/blog/2022/8/16/chaining-unity-coroutines-knowing-when-a-coroutine-finishes
