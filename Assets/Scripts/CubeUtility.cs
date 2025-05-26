@@ -122,6 +122,9 @@ public class CubeUtility : MonoBehaviour
             // rotate each cube
             cube_list[i].transform.Rotate(new Vector3(0, angle_theta * -1, 0));
 
+            // apply scaling to each cube
+            cube_list[i].transform.localScale = invokingObject.transform.localScale;
+
             // yay math
             // image a unit circle. Find where to position each cube - starting from 1 side of the unite circle, and ending at the other
             cube_list[i].transform.position =
