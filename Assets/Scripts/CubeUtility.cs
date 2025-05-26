@@ -122,10 +122,15 @@ public class CubeUtility : MonoBehaviour
         float angle_theta = invokingObject.transform.eulerAngles.y; // degrees
         float angle_theta_r = angle_theta * Mathf.PI / 180.0f;      // radiants
 
+
         Vector3 start_pos = invokingObject.transform.localPosition; // fetch it's transform
 
         for (int i = 0; i < cube_list.Count; i++)
         {
+            // set each cube's parent
+            cube_list[i].transform.parent = invokingObject.transform;
+
+
             // rotate each cube
             cube_list[i].transform.Rotate(new Vector3(0, angle_theta * -1, 0));
 
