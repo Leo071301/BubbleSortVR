@@ -61,9 +61,11 @@ public class CubeUtility : MonoBehaviour
 
     /*
      * Return a C# List of <GameObject>'s with size_in to determine list size
-     * Apply mesh filters and renders accordingly, can be readily modified.
+     * Apply mesh filters and renders using the material given.
+     * 
+     * Note: MUST BE Universal Render Pipeline Shader!!!!!!!
      */
-    public static List<GameObject> createCubeList(List<int> list_in)
+    public static List<GameObject> createCubeList(List<int> list_in, Material material, Color color_in)
     {
         List<GameObject> cube_array = new List<GameObject>();
 
@@ -76,9 +78,14 @@ public class CubeUtility : MonoBehaviour
             MeshFilter m_filter = cube.GetComponent<MeshFilter>();
             MeshRenderer m_renderer = cube.GetComponent<MeshRenderer>();
 
-            // decorate cube
+            // apply shader
+            m_renderer.material = material;
+
+            // apply default color
+            m_renderer.material.color = color_in;
+
+            // apply cube name
             cube.name = list_in[i].ToString();     // the name will be the number itself
-            m_renderer.material.color = Color.white;
 
             // add text
             addTextToCube(cube, list_in[i].ToString());
