@@ -135,7 +135,7 @@ public class cubeScript : MonoBehaviour
         // define variables
         float move_time = Time.deltaTime * 4; // seconds
         float fTHRESHOLD = 0.1f;
-        swap_isDone = false;
+        swap_isDone = false; // tracks whether swapping is done 
 
         while (Vector3.Distance(cube.transform.localPosition, destination) > fTHRESHOLD)
         {
