@@ -128,7 +128,8 @@ public class CubeUtility : MonoBehaviour
         for (int i = 0; i < cube_list.Count; i++)
         {
             // set each cube's parent
-            cube_list[i].transform.parent = invokingObject.transform;
+            // NVM this BREAKS the swap coroutine
+            //cube_list[i].transform.parent = invokingObject.transform;
 
 
             // rotate each cube
@@ -161,10 +162,10 @@ public class CubeUtility : MonoBehaviour
      */
     public static IEnumerator moveCube(GameObject cube, Vector3 destination)
     {
-        // define variables
         float move_time = Time.deltaTime * 5; // seconds
         float fTHRESHOLD = 0.1f;
 
+        // keep moving until reaches destination
         while (Vector3.Distance(cube.transform.localPosition, destination) > fTHRESHOLD)
         {
             cube.transform.position = Vector3.Lerp(cube.transform.localPosition, destination, move_time);
@@ -230,8 +231,9 @@ public class CubeUtility : MonoBehaviour
         GameObject cube1 = cube_list[first_index];
         GameObject cube2 = cube_list[second_index];
 
-        Vector3 cube1_startPos = cube1.transform.position;
-        Vector3 cube2_startPos = cube2.transform.position;
+        Vector3 cube1_startPos = cube1.transform.localPosition;
+        Vector3 cube2_startPos = cube2.transform.localPosition;
+
 
         /******* put cube1 where cube2 originaly was *******/
         invokingClass.StartCoroutine(moveCube(cube1, cube2_startPos));
@@ -282,7 +284,7 @@ public class CubeUtility : MonoBehaviour
     {
         // Scale factor of 3000 for Unity
         // Scale factor of 300 for Spatial VR
-        const int SCALE = 3000;
+        const int SCALE = 300;
 
         for (int i = 0; i < cube_list.Count; i++)
         {
