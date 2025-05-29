@@ -128,8 +128,12 @@ public class CubeUtility : MonoBehaviour
         for (int i = 0; i < cube_list.Count; i++)
         {
             // set each cube's parent
+<<<<<<< Updated upstream
             // NVM this BREAKS the swap coroutine
             //cube_list[i].transform.parent = invokingObject.transform;
+=======
+            // cube_list[i].transform.parent = invokingObject.transform;
+>>>>>>> Stashed changes
 
 
             // rotate each cube

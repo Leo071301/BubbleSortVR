@@ -126,10 +126,5 @@ public class BubbleSortScript : MonoBehaviour
         // Only when the cubes exist (created on event)
         if (bubblesort_cubes != null)
             CubeUtility.floatCubes(bubblesort_cubes);
-
-        // We Can't test Spatial features inside of unity
-        // So the 'D' Key will trigger the animation for testing purposes
-        if (Input.GetKeyDown(KeyCode.D))
-            BubbleSortEvent();
     }
 }
