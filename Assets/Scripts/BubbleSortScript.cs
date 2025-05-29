@@ -39,20 +39,20 @@ public class BubbleSortScript : MonoBehaviour
         //https://www.w3schools.com/dsa/dsa_algo_bubblesort.php
         int n = bubblesort_cubes.Count;
 
-        liveText.syncLiveText(0);
+        liveText.syncLiveText(1);
         yield return new WaitForSeconds(1); // wait 3 sec
 
         for (int i = 0; i < n - 1; i++)
         {
-            liveText.syncLiveText(1);   // for i
+            liveText.syncLiveText(2);   // for i
             yield return new WaitForSeconds(0.3f);
 
             // highlight tile0
             for (int j = 0; j < n - i - 1; j++)
             {
-                liveText.syncLiveText(2);   // for j
+                liveText.syncLiveText(3);   // for j
                 yield return new WaitForSeconds(0.3f);
-                liveText.syncLiveText(3);   // if statement
+                liveText.syncLiveText(4);   // if statement
 
                 // highlight tile1
                 // Highlight two cubes being compared
@@ -65,7 +65,7 @@ public class BubbleSortScript : MonoBehaviour
                 if (int.Parse(bubblesort_cubes[j].name) >
                     int.Parse(bubblesort_cubes[j + 1].name))
                 {
-                    liveText.syncLiveText(4);
+                    liveText.syncLiveText(5);   // swap
 
                     // Highlight two cubes being swapped
                     // dont wait for highlighting to finish
@@ -82,7 +82,6 @@ public class BubbleSortScript : MonoBehaviour
                 }
                 else
                 {
-                    liveText.syncLiveText(1);   // for i
 
                     // Highlight two cubes being swapped
                     // wait for highlighting to finish
@@ -92,7 +91,7 @@ public class BubbleSortScript : MonoBehaviour
             }
         }
 
-        liveText.syncLiveText(5);   // back to no text highlighting
+        liveText.syncLiveText(0);   // back to no text highlighting
         isAnimating = false;
     }
 
@@ -116,7 +115,7 @@ public class BubbleSortScript : MonoBehaviour
     void Start()
     {
         // how to know which index is which? Set it up and check in the inspector
-        liveText.syncLiveText(5); // 5 is the index is the one that has no highlighting
+        liveText.syncLiveText(0); // 0 is the index is the one that has no highlighting
     }
 
 
