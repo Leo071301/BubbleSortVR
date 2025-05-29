@@ -11,6 +11,7 @@ UpgradeLog.htm
 *.sln
 .vsconfig
 .vscode
+.vs
 !Assets/**/*~
 Assets/Unity.VisualScripting.Generated*
 Assets/Spatial/Temp*

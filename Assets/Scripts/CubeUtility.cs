@@ -128,12 +128,8 @@ public class CubeUtility : MonoBehaviour
         for (int i = 0; i < cube_list.Count; i++)
         {
             // set each cube's parent
-<<<<<<< Updated upstream
             // NVM this BREAKS the swap coroutine
             //cube_list[i].transform.parent = invokingObject.transform;
-=======
-            // cube_list[i].transform.parent = invokingObject.transform;
->>>>>>> Stashed changes
 
 
             // rotate each cube
@@ -204,13 +200,13 @@ public class CubeUtility : MonoBehaviour
         Vector3 pos_below =
             new Vector3(cube2.transform.position.x, cube2.transform.position.y - 1.5f, cube2.transform.position.z);
         yield return invokingClass.StartCoroutine(moveCube(cube2, pos_below));
- 
+
 
         /******* store position where cube 1 will slide over to *******/
         Vector3 pos1_slideOver =
             new Vector3(cube2_startPos.x, cube1.transform.position.y, cube2_startPos.z);
         yield return invokingClass.StartCoroutine(moveCube(cube1, pos1_slideOver));
-        
+
 
         /******* store position where cube 2 will slide over to *******/
         Vector3 pos2_slideOver =
@@ -220,7 +216,7 @@ public class CubeUtility : MonoBehaviour
 
         /******* put cube1 where cube2 originaly was *******/
         yield return invokingClass.StartCoroutine(moveCube(cube1, cube2_startPos));
-        
+
 
         /******* put cube2 where cube1 originaly was *******/
         yield return invokingClass.StartCoroutine(moveCube(cube2, cube1_startPos));
@@ -266,7 +262,7 @@ public class CubeUtility : MonoBehaviour
         // keep changing colors untill target color is reached
         while (timeElapsed < highlight_time && m_renderer != null)
         {
-            timeElapsed += Time.deltaTime * 1.5f / highlight_time;  
+            timeElapsed += Time.deltaTime * 1.5f / highlight_time;
 
             //m_renderer.material.color = Color.Lerp(tartet_color, current_color, Mathf.PingPong(timeElapsed , 1));
             m_renderer.material.color = Color.Lerp(current_color, target_color, timeElapsed);
@@ -288,7 +284,7 @@ public class CubeUtility : MonoBehaviour
     {
         // Scale factor of 3000 for Unity
         // Scale factor of 300 for Spatial VR
-        const int SCALE = 300;
+        const int SCALE = 3000;
 
         for (int i = 0; i < cube_list.Count; i++)
         {
