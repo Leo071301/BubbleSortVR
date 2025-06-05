@@ -405,9 +405,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "n = len(my_array)\n\r\nfor i in range(n-1):\r\n\n    for j in range(n-i-1):\r\n\n       
-    if my_array[j] > my_array[j+1]:\r\n\n            swap( my_array[j], my_array[j+1]
-    )"
+  m_text: "n = len(my_array)\n\nfor i in range(n-1):\r\n\n    for j in range(n-i-1):\r\n\n       
+    if my_array[j] > my_array[j+1]:\r\n<mark=#D6BF226E>\n            swap( my_array[j],
+    my_array[j+1] )\n</mark>"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -737,15 +737,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 92809977}
-  m_LocalRotation: {x: 0.17154394, y: -0.45895907, z: 0.09080967, w: 0.8669965}
-  m_LocalPosition: {x: 4.51, y: 5.82, z: -2.12}
+  m_LocalRotation: {x: 0.049510203, y: -0.467122, z: 0.026209066, w: 0.88241655}
+  m_LocalPosition: {x: 4.51, y: 5.820001, z: -2.12}
   m_LocalScale: {x: 5, y: 4, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 58990394}
   m_Father: {fileID: 987159597}
   m_RootOrder: 8
-  m_LocalEulerAnglesHint: {x: 22.384, y: -55.79, z: 0}
+  m_LocalEulerAnglesHint: {x: 6.423, y: -55.79, z: 0}
 --- !u!23 &92809980
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5513,29 +5513,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textMeshPro: {fileID: 58990395}
-  highlightColor: {r: 0.50081277, g: 1, b: 0.25157225, a: 0}
-  highlight_start: <mark="#80FF4000">
+  highlightColor: {r: 0.8396226, g: 0.74947774, b: 0.13201608, a: 0.43137255}
+  highlight_start: <mark=#D6BF226E>
   highlight_end: </mark>
-  previewIndex: 0
+  previewIndex: 5
   text_list:
   - "n = len(my_array)\n\r\nfor i in range(n-1):\r\n\n    for j in range(n-i-1):\r\n\n       
     if my_array[j] > my_array[j+1]:\r\n\n            swap( my_array[j], my_array[j+1]
     )"
-  - "<mark=\"#80FF4000\">n = len(my_array)\n\r</mark>\nfor i in range(n-1):\r\n\n   
+  - "<mark=#D6BF226E>n = len(my_array)\n\r</mark>\nfor i in range(n-1):\r\n\n   
     for j in range(n-i-1):\r\n\n        if my_array[j] > my_array[j+1]:\r\n\n           
     swap( my_array[j], my_array[j+1] )"
-  - "n = len(my_array)\n<mark=\"#80FF4000\">\r\nfor i in range(n-1):\r\n</mark>\n   
-    for j in range(n-i-1):\r\n\n        if my_array[j] > my_array[j+1]:\r\n\n           
+  - "n = len(my_array)\n<mark=#D6BF226E>\nfor i in range(n-1):\r\n</mark>\n    for
+    j in range(n-i-1):\r\n\n        if my_array[j] > my_array[j+1]:\r\n\n           
     swap( my_array[j], my_array[j+1] )"
-  - "n = len(my_array)\n\nfor i in range(n-1):\r\n<mark=\"#80FF4000\">\r\n    for
-    j in range(n-i-1):\r\n</mark>\n        if my_array[j] > my_array[j+1]:\r\n\n           
+  - "n = len(my_array)\n\nfor i in range(n-1):\r\n<mark=#D6BF226E>\n    for j in
+    range(n-i-1):\r\n</mark>\n        if my_array[j] > my_array[j+1]:\r\n\n           
     swap( my_array[j], my_array[j+1] )"
-  - "n = len(my_array)\n\nfor i in range(n-1):\r\n\n    for j in range(n-i-1):\r\n<mark=\"#80FF4000\">\r\n       
+  - "n = len(my_array)\n\nfor i in range(n-1):\r\n\n    for j in range(n-i-1):\r\n<mark=#D6BF226E>\n       
     if my_array[j] > my_array[j+1]:\r\n</mark>\n            swap( my_array[j], my_array[j+1]
     )"
   - "n = len(my_array)\n\nfor i in range(n-1):\r\n\n    for j in range(n-i-1):\r\n\n       
-    if my_array[j] > my_array[j+1]:\r\n<mark=\"#80FF4000\">\r\n            swap(
-    my_array[j], my_array[j+1] )\n</mark>"
+    if my_array[j] > my_array[j+1]:\r\n<mark=#D6BF226E>\n            swap( my_array[j],
+    my_array[j+1] )\n</mark>"
 --- !u!1001 &737524156
 PrefabInstance:
   m_ObjectHideFlags: 0

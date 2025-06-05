@@ -284,7 +284,7 @@ public class CubeUtility : MonoBehaviour
     {
         // Scale factor of 3000 for Unity
         // Scale factor of 300 for Spatial VR
-        const int SCALE = 3000;
+        const int SCALE = 300;
 
         for (int i = 0; i < cube_list.Count; i++)
         {
