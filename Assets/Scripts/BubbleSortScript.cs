@@ -10,7 +10,8 @@ using UnityEngine;
 public class BubbleSortScript : MonoBehaviour
 {
     // custom script
-    [SerializeField] public LiveTextUtility liveText;    // Script, which if attached, enables syncing of text
+    [SerializeField] public LiveTextUtility liveText;       // script enables syncing of audio
+    [SerializeField] public LiveAudioUtility liveAudio;     // script enables syncing of audio
 
     [SerializeField] public List<int> number_list;  // List given thru the 'inspector tab', used to create List of GameObjects
     [SerializeField] public int Total_Spacing = 15; // tune the spacing of cubes
@@ -46,13 +47,17 @@ public class BubbleSortScript : MonoBehaviour
         {
             liveText.syncLiveText(2);   // for i
             yield return new WaitForSeconds(0.3f);
-
+            
             // highlight tile0
             for (int j = 0; j < n - i - 1; j++)
             {
+
                 liveText.syncLiveText(3);   // for j
+                yield return StartCoroutine(liveAudio.playAndWait(0));  // just a test
+
                 yield return new WaitForSeconds(0.3f);
                 liveText.syncLiveText(4);   // if statement
+                yield return StartCoroutine(liveAudio.playAndWait(1));  // just a test
 
                 // highlight tile1
                 // Highlight two cubes being compared
@@ -66,6 +71,7 @@ public class BubbleSortScript : MonoBehaviour
                     int.Parse(bubblesort_cubes[j + 1].name))
                 {
                     liveText.syncLiveText(5);   // swap
+                    yield return StartCoroutine(liveAudio.playAndWait(2));  // just a test
 
                     // Highlight two cubes being swapped
                     // dont wait for highlighting to finish
@@ -92,12 +98,15 @@ public class BubbleSortScript : MonoBehaviour
         }
 
         liveText.syncLiveText(0);   // back to no text highlighting
+        yield return StartCoroutine(liveAudio.playAndWait(4));  // just a test
         isAnimating = false;
     }
 
     // Invoked by Spatial SDK Interactable
     public void BubbleSortEvent()
     {
+        
+
         if (isAnimating) return;        // Prevents multiple 'Events' at once
 
         // create cubes and configure ONLY via first interaction!
