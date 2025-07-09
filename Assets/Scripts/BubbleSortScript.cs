@@ -62,7 +62,7 @@ public class BubbleSortScript : MonoBehaviour
                 // highlight tile1
                 // Highlight two cubes being compared
                 // wait for highlighting to finish
-                yield return StartCoroutine(CubeUtility.PulseHighlight(bubblesort_cubes[j], Check_Color, Check_TIME));
+               
                 yield return StartCoroutine(CubeUtility.PulseHighlight(bubblesort_cubes[j + 1], Check_Color, Check_TIME));
 
                 // highlit tile 2
