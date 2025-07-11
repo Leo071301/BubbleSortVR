@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 
+ *  LiveAudioUtility - is a class which impliments a co-routine behaviour for playing audio
+ *                      the list of audioclips can be acessed and modified readily in 
+ *                      the inspector tab
+ *                      
+ *  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ */
 public class LiveAudioUtility : MonoBehaviour
 {
     // fields set in the inspector

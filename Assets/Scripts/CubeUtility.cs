@@ -201,7 +201,6 @@ public class CubeUtility : MonoBehaviour
             new Vector3(cube2.transform.position.x, cube2.transform.position.y - 1.5f, cube2.transform.position.z);
         yield return invokingClass.StartCoroutine(moveCube(cube2, pos_below));
 
-
         /******* store position where cube 1 will slide over to *******/
         Vector3 pos1_slideOver =
             new Vector3(cube2_startPos.x, cube1.transform.position.y, cube2_startPos.z);
@@ -241,6 +240,41 @@ public class CubeUtility : MonoBehaviour
 
         /******* put cube2 where cube1 originaly was *******/
         yield return invokingClass.StartCoroutine(moveCube(cube2, cube1_startPos));
+    }
+
+    public static IEnumerator insertCubeAndShift(List<GameObject> cube_lists, int from_index, int to_index, MonoBehaviour invokingClass)
+    {
+
+        // We going to store  a list of positions inorder to shift each cube. FiLO Order
+        Stack<Vector3> shiftPositions = new Stack<Vector3>();
+
+        for (int i = to_index; i <= from_index; i++)    // i found a bug here x_x rip lol
+        {
+            shiftPositions.Push(cube_lists[i].transform.position);
+        }
+
+        // preparing move out the way!
+        Vector3 posBelow = shiftPositions.Peek();   // acess the top element in the stack
+        posBelow.y -= 3;
+        yield return invokingClass.StartCoroutine(moveCube(cube_lists[from_index], posBelow));  // move out the way!
+
+
+        // shift cubes, 1 by 1        
+        for (int k = from_index - 1; k >= to_index; k--)
+        {
+            yield return invokingClass.StartCoroutine(moveCube(cube_lists[k], shiftPositions.Pop()));    // pop the stack! Each cube will slide along 1 by 1
+        }
+
+        // at this point, only 1 position is left in the stack, the "from_index" position, 
+        // now we can insert our cube
+
+        // preparing to slide!
+        posBelow = shiftPositions.Peek();
+        posBelow.y -= 3;
+        yield return invokingClass.StartCoroutine(moveCube(cube_lists[from_index], posBelow));              // slide!
+        yield return invokingClass.StartCoroutine(moveCube(cube_lists[from_index], shiftPositions.Pop()));   // and insert!
+
+        // NOTE: NOTE: NOTE: This is an animation only, "cube_lists" is still unchanged.
     }
 
     /*
@@ -294,6 +328,8 @@ public class CubeUtility : MonoBehaviour
                 cube_list[i].transform.position.z + Mathf.Sin(Time.time + i) / SCALE * 2);
         }
     }
+
+
 }
 
 // BIG Credit to Dev Log for this wonderfull Design Aspect regarding Co-Routines

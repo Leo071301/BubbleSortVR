@@ -10,7 +10,7 @@ using UnityEngine;
 public class BubbleSortScript : MonoBehaviour
 {
     // custom script
-    [SerializeField] public LiveTextUtility liveText;       // script enables syncing of audio
+    [SerializeField] public LiveTextUtility liveText;       // script enables syncing of text
     [SerializeField] public LiveAudioUtility liveAudio;     // script enables syncing of audio
 
     [SerializeField] public List<int> number_list;  // List given thru the 'inspector tab', used to create List of GameObjects
@@ -53,16 +53,16 @@ public class BubbleSortScript : MonoBehaviour
             {
 
                 liveText.syncLiveText(3);   // for j
-                yield return StartCoroutine(liveAudio.playAndWait(0));  // just a test
+                yield return StartCoroutine(liveAudio.playAndWait(0));  // audio
 
                 yield return new WaitForSeconds(0.3f);
                 liveText.syncLiveText(4);   // if statement
-                yield return StartCoroutine(liveAudio.playAndWait(1));  // just a test
+                yield return StartCoroutine(liveAudio.playAndWait(1));  // audio
 
                 // highlight tile1
                 // Highlight two cubes being compared
                 // wait for highlighting to finish
-               
+
                 yield return StartCoroutine(CubeUtility.PulseHighlight(bubblesort_cubes[j + 1], Check_Color, Check_TIME));
 
                 // highlit tile 2
@@ -71,7 +71,7 @@ public class BubbleSortScript : MonoBehaviour
                     int.Parse(bubblesort_cubes[j + 1].name))
                 {
                     liveText.syncLiveText(5);   // swap
-                    yield return StartCoroutine(liveAudio.playAndWait(2));  // just a test
+                    yield return StartCoroutine(liveAudio.playAndWait(2));  // audio
 
                     // Highlight two cubes being swapped
                     // dont wait for highlighting to finish
@@ -98,7 +98,7 @@ public class BubbleSortScript : MonoBehaviour
         }
 
         liveText.syncLiveText(0);   // back to no text highlighting
-        yield return StartCoroutine(liveAudio.playAndWait(4));  // just a test
+        yield return StartCoroutine(liveAudio.playAndWait(4));  // audio
         isAnimating = false;
     }
 
