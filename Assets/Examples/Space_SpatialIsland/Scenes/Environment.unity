@@ -405,9 +405,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "n = len(my_array)\n\nfor i in range(n-1):\r\n\n    for j in range(n-i-1):\r\n\n       
-    if my_array[j] > my_array[j+1]:\r\n<mark=#D6BF226E>\n            swap( my_array[j],
-    my_array[j+1] )\n</mark>"
+  m_text: "n = len(my_array)\n\nfor i in range(n-1):\r\n<mark=#D6BF226E>\n    for
+    j in range(n-i-1):\r\n</mark>\n        if my_array[j] > my_array[j+1]:\r\n\n           
+    swap( my_array[j], my_array[j+1] )"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1980,7 +1980,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   liveText: {fileID: 224773466}
   liveAudio: {fileID: 256959278}
-  number_list: 09000000060000000700000005000000030000000100000005000000
+  number_list: 0200000006000000060000000600000006000000
   Total_Spacing: 15
   default_Color: {r: 0.76214844, g: 0.9339623, b: 0.90339667, a: 0.6862745}
   material: {fileID: 8964512993171263168, guid: bb311e684aa9241a0a21c25ceb14f0dc,
@@ -5474,6 +5474,14 @@ MonoBehaviour:
   liveText: {fileID: 0}
   liveAudio: {fileID: 0}
   number_list: 
+  Total_Spacing: 15
+  default_color: {r: 0, g: 0, b: 0, a: 0}
+  material: {fileID: 0}
+  Good_Color: {r: 0, g: 0, b: 0, a: 0}
+  Swap_Color: {r: 0, g: 0, b: 0, a: 0}
+  Swap_TIME: 2
+  Check_Color: {r: 0, g: 0, b: 0, a: 0}
+  Check_TIME: 1
 --- !u!1001 &622539903
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6367,7 +6375,7 @@ MonoBehaviour:
   highlightColor: {r: 0.8396226, g: 0.74947774, b: 0.13201608, a: 0.43137255}
   highlight_start: <mark=#D6BF226E>
   highlight_end: </mark>
-  previewIndex: 5
+  previewIndex: 3
   text_list:
   - "n = len(my_array)\n\r\nfor i in range(n-1):\r\n\n    for j in range(n-i-1):\r\n\n       
     if my_array[j] > my_array[j+1]:\r\n\n            swap( my_array[j], my_array[j+1]
@@ -13075,7 +13083,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6171ecbf9b263146a0583cb316c6fa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Slowness: 250
+  Slowness: 267
   enable_x: 1
   enable_y: 0
   enable_z: 0

@@ -53,11 +53,11 @@ public class BubbleSortScript : MonoBehaviour
             {
 
                 liveText.syncLiveText(3);   // for j
-                yield return StartCoroutine(liveAudio.playAndWait(0));  // audio
+                yield return StartCoroutine(liveAudio.playNextAudio());
 
                 yield return new WaitForSeconds(0.3f);
                 liveText.syncLiveText(4);   // if statement
-                yield return StartCoroutine(liveAudio.playAndWait(1));  // audio
+                yield return StartCoroutine(liveAudio.playNextAudio()); 
 
                 // highlight tile1
                 // Highlight two cubes being compared
@@ -71,7 +71,7 @@ public class BubbleSortScript : MonoBehaviour
                     int.Parse(bubblesort_cubes[j + 1].name))
                 {
                     liveText.syncLiveText(5);   // swap
-                    yield return StartCoroutine(liveAudio.playAndWait(2));  // audio
+                    yield return StartCoroutine(liveAudio.playNextAudio());
 
                     // Highlight two cubes being swapped
                     // dont wait for highlighting to finish
@@ -98,7 +98,7 @@ public class BubbleSortScript : MonoBehaviour
         }
 
         liveText.syncLiveText(0);   // back to no text highlighting
-        yield return StartCoroutine(liveAudio.playAndWait(4));  // audio
+        yield return StartCoroutine(liveAudio.playNextAudio()); 
         isAnimating = false;
     }
 

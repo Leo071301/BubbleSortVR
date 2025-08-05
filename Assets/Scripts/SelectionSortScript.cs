@@ -96,6 +96,14 @@ public class SelectionSortScript : MonoBehaviour
         }
 
         liveText.syncLiveText(0);   // back to no text highlighting
+
+        // cool animation
+        foreach (var cube in insertionsort_cubes)
+        {
+            StartCoroutine(CubeUtility.PulseHighlight(cube, Good_Color, 1.0f));
+            yield return new WaitForSeconds(0.2f);
+        }
+
         isAnimating = false;
     }
 
