@@ -24,13 +24,55 @@ public class InsertionSortScript : MonoBehaviour
     [SerializeField] public float Check_TIME = 1.0f; // time it takes to check if it needs to swap
 
     [NonSerialized]
-    private List<GameObject> bubblesort_cubes = null; // list of cubes made, positioned, and programmed
+    private List<GameObject> insertionsort_cubes = null; // list of cubes made, positioned, and programmed
     private bool isAnimating = false; // boolean that will check to make sure multiple animations are not going over each other
 
+
+    public IEnumerator InsertionSortAnimation()
+    {
+        isAnimating = true;
+
+        int n = insertionsort_cubes.Count; // gets amount of cubes that exist 
+        for (int i = 1; i < n; i++) {
+            int insert_index = i; // gets current index
+            int current_value = int.Parse(insertionsort_cubes[insertionsort_cubes.Count - 1].name); // gets last element before its removed
+            insertionsort_cubes.RemoveAt(insertionsort_cubes.Count - 1); // removes last element
+            for(int j = i - 1; j > -1; j--)
+            {
+                if (int.Parse(insertionsort_cubes[j].name) > current_value)
+                {
+                    insert_index = j;
+
+                }
+            }
+            insertionsort_cubes.Insert(insert_index, insertionsort_cubes[current_value]);
+        }
+
+        yield return null;
+        isAnimating = false; // no longer animating 
+
+
+
+    }
+
+    public void InsertionSortEvent()
+    {
+        if (isAnimating) return; 
+
+        if(insertionsort_cubes != null)
+        {
+            insertionsort_cubes = CubeUtility.createCubeList(number_list, material, default_color);
+
+            CubeUtility.positionCubeList(insertionsort_cubes, Total_Spacing, this);
+        }
+
+        StartCoroutine(InsertionSortAnimation());
+    }
 
     // Start is called before the first frame update
     void Start()
     {
+        liveText.syncLiveText(0);
 
         
     }
@@ -38,6 +80,11 @@ public class InsertionSortScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if(insertionsort_cubes != null)
+        {
+            CubeUtility.floatCubes(insertionsort_cubes);
+        }
         
     }
 }

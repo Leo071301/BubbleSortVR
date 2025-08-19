@@ -35,7 +35,7 @@ public class LiveTextUtility : MonoBehaviour
     [SerializeField] public string highlight_end = "</mark>";
 
 
-    [Range(0, 6)]               // allow slider in the inspector
+    [Range(0, 10)]               // allow slider in the inspector
     [SerializeField] public int previewIndex = 0;   // which text element we will preview
 
     [TextArea(5, 20)]           // allow text entry in the inspector
