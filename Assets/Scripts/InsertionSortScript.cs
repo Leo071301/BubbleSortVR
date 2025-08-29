@@ -72,7 +72,7 @@ public class InsertionSortScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        liveText.syncLiveText(0);
+        //liveText.syncLiveText(0);
 
         
     }
