@@ -24528,21 +24528,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0137de536d06e4a37be9a2b99d9a35ef, type: 3}
---- !u!1001 &1995247414
-PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 1599916231}
     m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: 9c00ff474498a45548f4f241b8d6ab3b,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 9c00ff474498a45548f4f241b8d6ab3b,
-        type: 3}
-      propertyPath: m_LocalScale.x
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9c00ff474498a45548f4f241b8d6ab3b,
