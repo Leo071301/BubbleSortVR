@@ -16139,7 +16139,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: -296.212, z: 0}
 --- !u!1001 &1694924682
@@ -16627,8 +16626,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1725923031}
-  - component: {fileID: 1725923030}
-  - component: {fileID: 1725923029}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
