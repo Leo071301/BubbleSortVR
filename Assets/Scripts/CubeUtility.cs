@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 
@@ -123,7 +124,7 @@ public class CubeUtility : MonoBehaviour
         float angle_theta_r = angle_theta * Mathf.PI / 180.0f;      // radiants
 
 
-        Vector3 start_pos = invokingObject.transform.localPosition; // fetch it's transform
+        Vector3 start_pos = invokingObject.transform.position; // fetch it's transform
 
         for (int i = 0; i < cube_list.Count; i++)
         {
@@ -160,9 +161,9 @@ public class CubeUtility : MonoBehaviour
      * Move cube from it's current postion to the destination vector
      * Move Timing and distance threshold can be readily modified to your liking
      */
-    public static IEnumerator moveCube(GameObject cube, Vector3 destination)
+    public static IEnumerator moveCube(GameObject cube, Vector3 destination, float speed = 8)
     {
-        float move_time = Time.deltaTime * 5; // seconds
+        float move_time = Time.deltaTime * speed; // seconds
         float fTHRESHOLD = 0.1f;
 
         // keep moving until reaches destination
@@ -242,6 +243,10 @@ public class CubeUtility : MonoBehaviour
         yield return invokingClass.StartCoroutine(moveCube(cube2, cube1_startPos));
     }
 
+    /*
+    * This generator will pull down the cube at the "from_index", shift along the cubes prior,
+    * And insert this cube into the "to_index", quite visually apealing actually.
+    */
     public static IEnumerator insertCubeAndShift(List<GameObject> cube_lists, int from_index, int to_index, MonoBehaviour invokingClass)
     {
 
@@ -275,6 +280,52 @@ public class CubeUtility : MonoBehaviour
         yield return invokingClass.StartCoroutine(moveCube(cube_lists[from_index], shiftPositions.Pop()));   // and insert!
 
         // NOTE: NOTE: NOTE: This is an animation only, "cube_lists" is still unchanged.
+    }
+
+    /*
+    * Animates each cube sequentially, placing cubes at y -50 and 
+    * bringing it back to its original y position
+    */
+    public static IEnumerator AnimateSpawnCubes(List<GameObject> cube_list, MonoBehaviour invokingClass)
+    {
+        foreach (var cube in cube_list)
+        {
+            Vector3 destination = cube.transform.position;
+
+            //place above the world
+            cube.transform.position = new Vector3 (destination.x, destination.y + 100, destination.z);
+
+            //and move back! viola!
+            invokingClass.StartCoroutine(moveCube(cube, destination));
+        }
+        yield return new WaitForSeconds(1);         // optional
+    }
+
+    /*
+    * Animates each cube sequentially, placing cubes at y -50 and 
+    * destroying cubes
+    */
+    public static IEnumerator AnimateDestroyCubes(List<GameObject> cube_list, MonoBehaviour invokingClass)
+    {
+        foreach (var cube in cube_list)
+        {
+            Vector3 destination = cube.transform.position;
+
+            destination = new Vector3(destination.x, destination.y - 10, destination.z);
+
+            // BEGONE!!!
+            invokingClass.StartCoroutine(moveCube(cube, destination));
+        }
+
+        yield return new WaitForSeconds(3);     // wait before destroying objects
+
+        foreach (var cube in cube_list)
+        {
+            Destroy(cube);  // adios
+        }
+
+        // cant set to null here, i would only be overriding the reference
+        // i would need a pointer for that, meh ill do it in the sortingscript
     }
 
     /*

@@ -27,7 +27,7 @@ public class SelectionSortScript : MonoBehaviour
     [SerializeField] public float Check_TIME = 1.0f;// emphasize time
 
     [NonSerialized]
-    private List<GameObject> insertionsort_cubes = null;       // Cubes created, positioned, and programmed by this script
+    private List<GameObject> selectionsort_cubes = null;       // Cubes created, positioned, and programmed by this script
     private bool isAnimating = false;                       // dont want to run multiple animations over eachother
 
 
@@ -37,8 +37,10 @@ public class SelectionSortScript : MonoBehaviour
     {
         isAnimating = true;
 
+        yield return StartCoroutine(CubeUtility.AnimateSpawnCubes(selectionsort_cubes, this));
+
         //https://www.w3schools.com/dsa/dsa_algo_selectionsort.php
-        int n = insertionsort_cubes.Count;
+        int n = selectionsort_cubes.Count;
 
         liveText.syncLiveText(1);
 
@@ -59,22 +61,22 @@ public class SelectionSortScript : MonoBehaviour
                 yield return new WaitForSeconds(0.3f);
 
                 // Highlight two cubes being compared
-                StartCoroutine(CubeUtility.PulseHighlight(insertionsort_cubes[j], Check_Color, Check_TIME));
-                yield return StartCoroutine(CubeUtility.PulseHighlight(insertionsort_cubes[min_index], Check_Color, Check_TIME));
+                StartCoroutine(CubeUtility.PulseHighlight(selectionsort_cubes[j], Check_Color, Check_TIME));
+                yield return StartCoroutine(CubeUtility.PulseHighlight(selectionsort_cubes[min_index], Check_Color, Check_TIME));
 
 
                 // this translates to [j] < [min_index]
-                if (int.Parse(insertionsort_cubes[j].name) <
-                    int.Parse(insertionsort_cubes[min_index].name))
+                if (int.Parse(selectionsort_cubes[j].name) <
+                    int.Parse(selectionsort_cubes[min_index].name))
                 {
                     liveText.syncLiveText(6);   // swap
-                    yield return StartCoroutine(CubeUtility.PulseHighlight(insertionsort_cubes[min_index], Caution_Color, Caution_TIME));
+                    yield return StartCoroutine(CubeUtility.PulseHighlight(selectionsort_cubes[min_index], Caution_Color, Caution_TIME));
 
                     min_index = j;
                 }
                 else
                     // this cube is in order *good*
-                    yield return StartCoroutine(CubeUtility.PulseHighlight(insertionsort_cubes[min_index], Good_Color, Check_TIME));
+                    yield return StartCoroutine(CubeUtility.PulseHighlight(selectionsort_cubes[min_index], Good_Color, Check_TIME));
 
             }
 
@@ -82,27 +84,31 @@ public class SelectionSortScript : MonoBehaviour
 
             // Highlight cube to be inserted
             // dont wait for highlighting to finish
-            yield return StartCoroutine(CubeUtility.PulseHighlight(insertionsort_cubes[min_index], Caution_Color, Caution_TIME));
+            yield return StartCoroutine(CubeUtility.PulseHighlight(selectionsort_cubes[min_index], Caution_Color, Caution_TIME));
 
             // insert cube
-            yield return StartCoroutine(CubeUtility.insertCubeAndShift(insertionsort_cubes, min_index, i, this));
+            yield return StartCoroutine(CubeUtility.insertCubeAndShift(selectionsort_cubes, min_index, i, this));
 
             // 'number_list' needs to be updated now, the animation doesent do this - it only moves cubeas around the world
             // C# Insertion
-            GameObject temp = insertionsort_cubes[min_index];
-            insertionsort_cubes.RemoveAt(min_index);
-            insertionsort_cubes.Insert(i, temp);
+            GameObject temp = selectionsort_cubes[min_index];
+            selectionsort_cubes.RemoveAt(min_index);
+            selectionsort_cubes.Insert(i, temp);
 
         }
 
         liveText.syncLiveText(0);   // back to no text highlighting
 
-        // cool animation
-        foreach (var cube in insertionsort_cubes)
+        // cool finished-animation
+        foreach (var cube in selectionsort_cubes)
         {
             StartCoroutine(CubeUtility.PulseHighlight(cube, Good_Color, 1.0f));
             yield return new WaitForSeconds(0.2f);
         }
+
+        // and destroy these cubes!!
+        yield return StartCoroutine(CubeUtility.AnimateDestroyCubes(selectionsort_cubes, this));
+        selectionsort_cubes = null;
 
         isAnimating = false;
     }
@@ -114,12 +120,12 @@ public class SelectionSortScript : MonoBehaviour
         if (isAnimating) return;        // Prevents multiple 'Events' at once
 
         // create cubes and configure ONLY via first interaction!
-        if (insertionsort_cubes == null)
+        if (selectionsort_cubes == null)
         {
-            insertionsort_cubes = CubeUtility.createCubeList(number_list, material, default_Color);
+            selectionsort_cubes = CubeUtility.createCubeList(number_list, material, default_Color);
 
             // position cubes using the 'Transform' component
-            CubeUtility.positionCubeList(insertionsort_cubes, Total_Spacing, this);
+            CubeUtility.positionCubeList(selectionsort_cubes, Total_Spacing, this);
         }
 
         StartCoroutine(SelectionSortAnimation());
@@ -136,7 +142,7 @@ public class SelectionSortScript : MonoBehaviour
     void Update()
     {
         // Only when the cubes exist (created on event)
-        if (insertionsort_cubes != null)
-            CubeUtility.floatCubes(insertionsort_cubes);
+        if (selectionsort_cubes != null)
+            CubeUtility.floatCubes(selectionsort_cubes);
     }
 }

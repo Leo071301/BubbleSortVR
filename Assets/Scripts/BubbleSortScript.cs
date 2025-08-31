@@ -36,6 +36,8 @@ public class BubbleSortScript : MonoBehaviour
     public IEnumerator BubbleSortAnimation()
     {
         isAnimating = true;
+        
+        yield return StartCoroutine(CubeUtility.AnimateSpawnCubes(bubblesort_cubes, this));
 
         //https://www.w3schools.com/dsa/dsa_algo_bubblesort.php
         int n = bubblesort_cubes.Count;
@@ -53,11 +55,9 @@ public class BubbleSortScript : MonoBehaviour
             {
 
                 liveText.syncLiveText(3);   // for j
-                yield return StartCoroutine(liveAudio.playNextAudio());
 
                 yield return new WaitForSeconds(0.3f);
                 liveText.syncLiveText(4);   // if statement
-                yield return StartCoroutine(liveAudio.playNextAudio()); 
 
                 // highlight tile1
                 // Highlight two cubes being compared
@@ -71,7 +71,6 @@ public class BubbleSortScript : MonoBehaviour
                     int.Parse(bubblesort_cubes[j + 1].name))
                 {
                     liveText.syncLiveText(5);   // swap
-                    yield return StartCoroutine(liveAudio.playNextAudio());
 
                     // Highlight two cubes being swapped
                     // dont wait for highlighting to finish
@@ -98,15 +97,25 @@ public class BubbleSortScript : MonoBehaviour
         }
 
         liveText.syncLiveText(0);   // back to no text highlighting
-        yield return StartCoroutine(liveAudio.playNextAudio()); 
+
+        // cool finished-animation
+        foreach (var cube in bubblesort_cubes)
+        {
+            StartCoroutine(CubeUtility.PulseHighlight(cube, Good_Color, 1.0f));
+            yield return new WaitForSeconds(0.2f);
+        }
+
+        // and destroy these cubes!!
+        yield return StartCoroutine(CubeUtility.AnimateDestroyCubes(bubblesort_cubes, this));
+        bubblesort_cubes = null;
+
         isAnimating = false;
+
     }
 
     // Invoked by Spatial SDK Interactable
     public void BubbleSortEvent()
     {
-        
-
         if (isAnimating) return;        // Prevents multiple 'Events' at once
 
         // create cubes and configure ONLY via first interaction!
@@ -120,6 +129,27 @@ public class BubbleSortScript : MonoBehaviour
 
         StartCoroutine(BubbleSortAnimation());
     }
+
+    /*
+     *  This is broken ASF, you can ignore this rip lol
+     * private void OnValidate()
+    {
+        if (preview)
+        {
+            bubblesort_cubes = null;    //delete previous-preview 
+            bubblesort_cubes = CubeUtility.createCubeList(number_list, material, default_Color);
+
+            // position cubes using the 'Transform' component
+            CubeUtility.positionCubeList(bubblesort_cubes, Total_Spacing, this);
+        }
+        else
+        {
+            if (bubblesort_cubes != null)
+            {
+                bubblesort_cubes = null;
+            }
+        }
+    }*/
 
     void Start()
     {

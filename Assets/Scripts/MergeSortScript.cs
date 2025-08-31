@@ -32,6 +32,8 @@ public class MergeSortScript : MonoBehaviour
     // This variable stores the return contents of Coroutines, wack workaround but it works lol
     private List<GameObject> returnList     = null;
 
+    // This list keeps the original positions in order, The "cube clones" will use this as reference
+    private List<Vector3> starting_Positions = null;
 
     // Invoked by Spatial SDK Interactable
     public void MergeSortEvent()
@@ -48,15 +50,19 @@ public class MergeSortScript : MonoBehaviour
             CubeUtility.positionCubeList(mergesort_cubes, Total_Spacing, this);
         }
 
-        StartCoroutine(MergeSort(mergesort_cubes));
-        
-        // - - After Sorting is Complete - -
-        List<GameObject> sorted_list = returnList;
+        // broken ATM, ignore!
+        // store away starting positions. WHy? So that I can move "cloned cubes" to their correct spot
+        foreach (var cube in mergesort_cubes)
+        {
+            //starting_Positions.Add(cube.transform.position);
+        }
 
+        StartCoroutine(MergeSort(mergesort_cubes));
     }
 
     //https://www.w3schools.com/dsa/dsa_algo_mergesort.php
     // Recursive Calls Ahead! CoRoutine Magic
+    // Testing this was actuall HELL 
     public IEnumerator MergeSort(List<GameObject> list)
     {
         //base case
@@ -68,6 +74,8 @@ public class MergeSortScript : MonoBehaviour
         List<GameObject> lefthalf = list.Take(mid).ToList();
         List<GameObject> righthalf = list.Skip(mid).ToList();
 
+        // highlight left half
+
         yield return StartCoroutine(MergeSort(lefthalf));
         List<GameObject> sortedLeft = returnList;
         yield return StartCoroutine(MergeSort(righthalf));
@@ -77,11 +85,13 @@ public class MergeSortScript : MonoBehaviour
         yield return StartCoroutine(Merge(sortedLeft, sortedRight));
 
         //optional
-        List<GameObject> sortedList = returnList;
+        //List<GameObject> sortedList = returnList;
     }
 
     public IEnumerator Merge(List<GameObject> left, List<GameObject> right)
     {
+        // okay, im going to be cloning these cube, I need to make sure the "clones" go 
+        // above our starting list.
         returnList = new List<GameObject>();
         int i = 0;
         int j = 0;
@@ -94,13 +104,26 @@ public class MergeSortScript : MonoBehaviour
                 int.Parse(right[j].name))
             {
                 returnList.Add(left[i]);
+                
+                // move the cube we just added, up a level (y-axis)
+                Vector3 destination = Vector3.zero; //TODO
+                yield return StartCoroutine(CubeUtility.moveCube(left[i], destination));
+
                 i++;
             }
             else
             {
                 returnList.Add(right[j]);
+
+                // move the cube we just added, up a level (y-axis)
+                Vector3 destination = Vector3.zero; //TODO
+                yield return StartCoroutine(CubeUtility.moveCube(right[j], destination));
+
                 j++;
             }
+
+            returnList.AddRange(left.Skip(i));  // thank you linq gods
+            returnList.AddRange(right.Skip(j)); // same as python's right[j:]
 
 
         }
@@ -124,14 +147,12 @@ public class MergeSortScript : MonoBehaviour
     }
     */
 
-    // Start is called before the first frame update
     void Start()
     {
         liveText.syncLiveText(0);
 
     }
 
-    // Update is called once per frame
     void Update()
     {
         // Only when the cubes exist(created on event)
