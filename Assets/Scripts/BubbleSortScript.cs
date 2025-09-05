@@ -12,6 +12,7 @@ public class BubbleSortScript : MonoBehaviour
     // custom script
     [SerializeField] public LiveTextUtility liveText;       // script enables syncing of text
     [SerializeField] public LiveAudioUtility liveAudio;     // script enables syncing of audio
+    [SerializeField] public PanelScript textPanel;          // script enables movement of panel
 
     [SerializeField] public List<int> number_list;  // List given thru the 'inspector tab', used to create List of GameObjects
     [SerializeField] public int Total_Spacing = 15; // tune the spacing of cubes
@@ -37,7 +38,9 @@ public class BubbleSortScript : MonoBehaviour
     {
         isAnimating = true;
         
+
         yield return StartCoroutine(CubeUtility.AnimateSpawnCubes(bubblesort_cubes, this));
+        yield return StartCoroutine(textPanel.SpawnIn());
 
         //https://www.w3schools.com/dsa/dsa_algo_bubblesort.php
         int n = bubblesort_cubes.Count;
@@ -108,6 +111,8 @@ public class BubbleSortScript : MonoBehaviour
         // and destroy these cubes!!
         yield return StartCoroutine(CubeUtility.AnimateDestroyCubes(bubblesort_cubes, this));
         bubblesort_cubes = null;
+        // panel goes away
+        yield return StartCoroutine(textPanel.Despawn());
 
         isAnimating = false;
 

@@ -9,6 +9,7 @@ public class InsertionSortScript : MonoBehaviour
     // custom script
     [SerializeField] public LiveTextUtility liveText;       // script enables syncing of text
     [SerializeField] public LiveAudioUtility liveAudio;     // script enables syncing of audio
+    [SerializeField] public PanelScript textPanel;          // script enables movement of panel
 
     [SerializeField] public List<int> number_list; // list given through the inspector tab
     [SerializeField] public int Total_Spacing = 15; // spacing between the cubes 

@@ -11,6 +11,7 @@ public class MergeSortScript : MonoBehaviour
     // custom script
     [SerializeField] public LiveTextUtility liveText;       // script enables syncing of text
     [SerializeField] public LiveAudioUtility liveAudio;     // script enables syncing of audio
+    [SerializeField] public PanelScript textPanel;          // script enables movement of panel
 
     [SerializeField] public List<int> number_list; // list given through the inspector tab
     [SerializeField] public int Total_Spacing = 15; // spacing between the cubes 
@@ -48,6 +49,9 @@ public class MergeSortScript : MonoBehaviour
             CubeUtility.positionCubeList(mergesort_cubes, Total_Spacing, this);
         }
 
+        StartCoroutine(textPanel.SpawnIn());
+        StartCoroutine(CubeUtility.AnimateSpawnCubes(mergesort_cubes, this));
+        
         StartCoroutine(MergeSort(mergesort_cubes));
     }
 
