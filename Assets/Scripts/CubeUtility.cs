@@ -302,7 +302,7 @@ public class CubeUtility : MonoBehaviour
     }
 
     /*
-    * Animates each cube sequentially, placing cubes at y -50 and 
+    * Animates each cube sequentially, placing cubes 10 units below its y-level and 
     * destroying cubes
     */
     public static IEnumerator AnimateDestroyCubes(List<GameObject> cube_list, MonoBehaviour invokingClass)
@@ -311,13 +311,13 @@ public class CubeUtility : MonoBehaviour
         {
             Vector3 destination = cube.transform.position;
 
-            destination = new Vector3(destination.x, destination.y - 10, destination.z);
+            destination = new Vector3(destination.x, destination.y - 15, destination.z);
 
             // BEGONE!!!
             invokingClass.StartCoroutine(moveCube(cube, destination));
         }
 
-        yield return new WaitForSeconds(3);     // wait before destroying objects
+        yield return new WaitForSeconds(1);     // wait before destroying objects
 
         foreach (var cube in cube_list)
         {
@@ -355,8 +355,6 @@ public class CubeUtility : MonoBehaviour
         }
 
     }
-
-    //public static IEnumerator
 
     /* * * * * * * * * * * * * * * * * * * * * * * *
      * 

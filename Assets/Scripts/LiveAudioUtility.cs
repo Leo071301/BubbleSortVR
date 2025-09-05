@@ -17,9 +17,6 @@ public class LiveAudioUtility : MonoBehaviour
     // fields set in the inspector
     [SerializeField] public AudioSource audioSource = null;
     [SerializeField] public List<AudioClip> audioClips = null;
-
-
-    [NonSerialized] private int clip_number = 0;
     void Start()
     {
         if (audioSource == null)
@@ -29,12 +26,9 @@ public class LiveAudioUtility : MonoBehaviour
             Debug.Log(" Please add audio clips to this script! Other-wise this script will break!" );
     }
 
-    public IEnumerator playNextAudio()
+    public IEnumerator playNextAudio(int n)
     {
-        //TODO create ITERATOR
-        //TODO try circled linked list
-
-        audioSource.clip = audioClips[ clip_number++ % audioClips.Count ];   // incriment after clip is selected !
+        audioSource.clip = audioClips[n];
         audioSource.Play();
 
         while (audioSource.isPlaying) 

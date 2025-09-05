@@ -32,8 +32,6 @@ public class MergeSortScript : MonoBehaviour
     // This variable stores the return contents of Coroutines, wack workaround but it works lol
     private List<GameObject> returnList     = null;
 
-    // This list keeps the original positions in order, The "cube clones" will use this as reference
-    private List<Vector3> starting_Positions = null;
 
     // Invoked by Spatial SDK Interactable
     public void MergeSortEvent()
@@ -50,29 +48,25 @@ public class MergeSortScript : MonoBehaviour
             CubeUtility.positionCubeList(mergesort_cubes, Total_Spacing, this);
         }
 
-        // broken ATM, ignore!
-        // store away starting positions. WHy? So that I can move "cloned cubes" to their correct spot
-        foreach (var cube in mergesort_cubes)
-        {
-            //starting_Positions.Add(cube.transform.position);
-        }
-
         StartCoroutine(MergeSort(mergesort_cubes));
     }
 
     //https://www.w3schools.com/dsa/dsa_algo_mergesort.php
     // Recursive Calls Ahead! CoRoutine Magic
-    // Testing this was actuall HELL 
+    // Testing these was actuall HELL 
     public IEnumerator MergeSort(List<GameObject> list)
     {
         //base case
-        if (list.Count <= 0) yield break;
+        if (list.Count <= 1) yield break;
 
         int mid = list.Count / 2;   // integer division
 
         // C# Linq slicing
         List<GameObject> lefthalf = list.Take(mid).ToList();
         List<GameObject> righthalf = list.Skip(mid).ToList();
+
+        Debug.Log("left half is:  " + lefthalf.Count.ToString());
+        Debug.Log("right half is: " + righthalf.Count.ToString());
 
         // highlight left half
 
@@ -84,14 +78,19 @@ public class MergeSortScript : MonoBehaviour
         // perform merging
         yield return StartCoroutine(Merge(sortedLeft, sortedRight));
 
-        //optional
-        //List<GameObject> sortedList = returnList;
+        // cool finish-highlight effect on returnlist
     }
 
     public IEnumerator Merge(List<GameObject> left, List<GameObject> right)
     {
-        // okay, im going to be cloning these cube, I need to make sure the "clones" go 
-        // above our starting list.
+        // Note:
+        // okay, im going to be referencing cubes on both left, and right sides,
+        // I need to make sure cubes move-above our starting list. Thats where the whole "Destination" vector comes in
+        // everything else is a C# translation of the merge sort
+        
+        List<GameObject> unmerged_list = left.Concat(right).ToList();   // thank you linq gods
+
+
         returnList = new List<GameObject>();
         int i = 0;
         int j = 0;
@@ -104,10 +103,15 @@ public class MergeSortScript : MonoBehaviour
                 int.Parse(right[j].name))
             {
                 returnList.Add(left[i]);
-                
-                // move the cube we just added, up a level (y-axis)
-                Vector3 destination = Vector3.zero; //TODO
-                yield return StartCoroutine(CubeUtility.moveCube(left[i], destination));
+
+                // prepare to move the cube we just added, up a level (y-axis)
+                // unmerged_list has the x and z positions in order, now to move the cubes.
+                Vector3 destination = unmerged_list[i + j].transform.position;
+                destination = new Vector3(destination.x, destination.y + 5, destination.z);   // move up
+
+                yield return StartCoroutine(CubeUtility.PulseHighlight(left[i], Good_Color));  // highlight cuz why not?
+                yield return StartCoroutine(CubeUtility.moveCube(left[i], destination));       // move boahhh
+
 
                 i++;
             }
@@ -115,42 +119,51 @@ public class MergeSortScript : MonoBehaviour
             {
                 returnList.Add(right[j]);
 
-                // move the cube we just added, up a level (y-axis)
-                Vector3 destination = Vector3.zero; //TODO
-                yield return StartCoroutine(CubeUtility.moveCube(right[j], destination));
+                // prepare to move the cube we just added, up a level (y-axis)
+                // unmerged_list has the x and z positions in order, now to move the cubes.
+                Vector3 destination = unmerged_list[i + j].transform.position;
+                destination = new Vector3 ( destination.x, destination.y + 5, destination.z);   // move up
+
+                yield return StartCoroutine(CubeUtility.PulseHighlight(right[j], Good_Color));  // highlight cuz why not?
+                yield return StartCoroutine(CubeUtility.moveCube(right[j], destination));       // move boahhh
 
                 j++;
             }
 
-            returnList.AddRange(left.Skip(i));  // thank you linq gods
+            returnList.AddRange(left.Skip(i));  // same as python's left[i:]
+
+            // move the remaining cubes - all at once. Left side
+            for (; i < left.Count; i++)
+            {
+                Vector3 destination = unmerged_list[i + j].transform.position;  // TODO test if works
+                destination = new Vector3(destination.x, destination.y + 5, destination.z);
+
+                StartCoroutine(CubeUtility.moveCube(left[i], destination));
+            }
+
             returnList.AddRange(right.Skip(j)); // same as python's right[j:]
 
 
+            yield return new WaitForSeconds(1); // wait
+
+            // move the remaining cubes - all at once. Right side
+            for (; j < right.Count; j++)
+            {
+                Vector3 destination = unmerged_list[i + j].transform.position;  // TODO test if works
+                destination = new Vector3(destination.x, destination.y + 5, destination.z);
+
+                StartCoroutine(CubeUtility.moveCube(right[j], destination));
+            }
+
+            yield return new WaitForSeconds(1); // wait
+
         }
-        yield return null;
-
     }
-    /*while i < len(left) and j<len(right):
-        if left[i] < right[j]:
-            result.append(left[i])
-            i += 1
-        else:
-            result.append(right[j])
-            j += 1
 
-    result.extend(left[i:])
-    result.extend(right[j:])
-
-    return result
-
-        yield return null;
-    }
-    */
 
     void Start()
     {
         liveText.syncLiveText(0);
-
     }
 
     void Update()
