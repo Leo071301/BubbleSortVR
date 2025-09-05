@@ -9031,9 +9031,9 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: 5153feea343f1d240ace2d401fd55007, type: 2}
   Good_Color: {r: 0.10765392, g: 0.7924528, b: 0.1407454, a: 0.7490196}
   Swap_Color: {r: 0.8773585, g: 0.13574219, b: 0.13574219, a: 0.80784315}
-  Swap_TIME: 2
+  Swap_TIME: 5
   Check_Color: {r: 0.8962264, g: 0.6928277, b: 0.15557136, a: 0.827451}
-  Check_TIME: 1
+  Check_TIME: 2
 --- !u!114 &733778271
 MonoBehaviour:
   m_ObjectHideFlags: 0

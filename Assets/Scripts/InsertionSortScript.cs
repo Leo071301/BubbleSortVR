@@ -30,9 +30,11 @@ public class InsertionSortScript : MonoBehaviour
 
     public IEnumerator InsertionSortAnimation()
     {
-        isAnimating = true;
+        isAnimating = true; // animation has officially started
 
         int n = insertionsort_cubes.Count; // gets amount of cubes that exist 
+
+
         for (int i = 1; i < n; i++) {
             int insert_index = i; // gets current index
             int current_value = int.Parse(insertionsort_cubes[insertionsort_cubes.Count - 1].name); // gets last element before its removed
@@ -57,8 +59,10 @@ public class InsertionSortScript : MonoBehaviour
 
     public void InsertionSortEvent()
     {
-        if (isAnimating) return; 
+        if (isAnimating) return; // prevents multiple events at once
 
+
+        // create the cubes and position them on the first interaction
         if(insertionsort_cubes != null)
         {
             insertionsort_cubes = CubeUtility.createCubeList(number_list, material, default_color);
@@ -80,6 +84,7 @@ public class InsertionSortScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // keep it floating throughout the game
 
         if(insertionsort_cubes != null)
         {
