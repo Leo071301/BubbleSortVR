@@ -16,12 +16,13 @@ public class PanelScript : MonoBehaviour
     private Vector3 visible_position;
 
     [SerializeField]
-    public Vector3 hiding_position;
+    public Vector3 hiding_position = new Vector3 (0, -100, 0);
 
     void Start()
     {
-        visible_position = transform.position;  // store position before the game starts,
-        transform.position = hiding_position;   // move out of sight, at the start of the game
+        visible_position = transform.localPosition;     // store world-position before the game starts
+        transform.position = hiding_position;           // move out of sight, at the start of the game
+
     }
 
     /* * * * * * * * * * * * * * * * * 
@@ -29,18 +30,22 @@ public class PanelScript : MonoBehaviour
      * Usefull Coroutine Animations
      * 
      */
-
+    
     public IEnumerator SpawnIn()
     {
+
         yield return StartCoroutine(CubeUtility.moveCube(gameObject, visible_position));
 
         yield return new WaitForSeconds(0.2f);
+        Debug.Log(transform.position);
     }
-
+    
     public IEnumerator Despawn()
     {
-        yield return StartCoroutine(CubeUtility.moveCube(gameObject, visible_position));
+        yield return StartCoroutine(CubeUtility.moveCube(gameObject, hiding_position));
 
         yield return new WaitForSeconds(0.2f);
     }
+
 }
+

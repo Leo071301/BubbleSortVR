@@ -49,10 +49,36 @@ public class MergeSortScript : MonoBehaviour
             CubeUtility.positionCubeList(mergesort_cubes, Total_Spacing, this);
         }
 
-        StartCoroutine(textPanel.SpawnIn());
-        StartCoroutine(CubeUtility.AnimateSpawnCubes(mergesort_cubes, this));
-        
-        StartCoroutine(MergeSort(mergesort_cubes));
+
+        StartCoroutine(MergeSortEventHelper());
+    }
+
+    // Intermediate-step inbetween 
+    //
+    // Event    ->  Helper  -> MergeSort()
+    //
+    // This co-routine simply displays animations prior to the "recursive mergesort" crazyness
+
+    public IEnumerator MergeSortEventHelper()
+    {
+        isAnimating = true;
+        yield return StartCoroutine(CubeUtility.AnimateSpawnCubes(mergesort_cubes, this));
+        //StartCoroutine(textPanel.SpawnIn());  // TODO Fix later
+
+        yield return StartCoroutine(MergeSort(mergesort_cubes));
+
+        //debug
+        Debug.Log("Cubes are: ");
+        foreach (var cube in mergesort_cubes)
+        {
+            Debug.Log(cube.name + " ");
+        }
+
+        yield return StartCoroutine(CubeUtility.AnimateDestroyCubes(mergesort_cubes, this));
+        //StartCoroutine(textPanel.Despawn());  // TODO Fix later
+
+        mergesort_cubes = null;     // very importaint
+        isAnimating = false;
     }
 
     //https://www.w3schools.com/dsa/dsa_algo_mergesort.php
@@ -61,16 +87,17 @@ public class MergeSortScript : MonoBehaviour
     public IEnumerator MergeSort(List<GameObject> list)
     {
         //base case
-        if (list.Count <= 1) yield break;
+        if (list.Count <= 1)
+        {
+            returnList = list;  // return the list itself , since this is the base case
+            yield break;        // stop this iterator block
+        }
 
         int mid = list.Count / 2;   // integer division
 
         // C# Linq slicing
         List<GameObject> lefthalf = list.Take(mid).ToList();
         List<GameObject> righthalf = list.Skip(mid).ToList();
-
-        Debug.Log("left half is:  " + lefthalf.Count.ToString());
-        Debug.Log("right half is: " + righthalf.Count.ToString());
 
         // highlight left half
 
@@ -88,16 +115,26 @@ public class MergeSortScript : MonoBehaviour
     public IEnumerator Merge(List<GameObject> left, List<GameObject> right)
     {
         // Note:
-        // okay, im going to be referencing cubes on both left, and right sides,
-        // I need to make sure cubes move-above our starting list. Thats where the whole "Destination" vector comes in
+        // okay, im going to be referencing cubes on both left, and right sides.
+        // I need to make sure cubes move-above the current "level", to do this i create
+
+        // unmerged_vector_list - The list of vector3's prior to being sorted. These will be used to move the cubes in their correct spot
         // everything else is a C# translation of the merge sort
+
+
+        List<Vector3> unmerged_vector_list = new List<Vector3>();
         
-        List<GameObject> unmerged_list = left.Concat(right).ToList();   // thank you linq gods
+        // copy each position vector, we will need these later
+        foreach (var cube in left.Concat(right).ToList())       // thank you linq gods
+        {
+            unmerged_vector_list.Add(cube.transform.position);
+        }
 
-
-        returnList = new List<GameObject>();
+        returnList = new List<GameObject>();        // DONT# TOUCH THIS!! x_X  this script will DIE
         int i = 0;
         int j = 0;
+
+        // begin merge sort
 
         while (i < left.Count && j < right.Count)
         {
@@ -110,11 +147,11 @@ public class MergeSortScript : MonoBehaviour
 
                 // prepare to move the cube we just added, up a level (y-axis)
                 // unmerged_list has the x and z positions in order, now to move the cubes.
-                Vector3 destination = unmerged_list[i + j].transform.position;
-                destination = new Vector3(destination.x, destination.y + 5, destination.z);   // move up
+                Vector3 destination = unmerged_vector_list[i + j];
+                destination = new Vector3(destination.x, destination.y + 1.5f, destination.z);   // position up
 
                 yield return StartCoroutine(CubeUtility.PulseHighlight(left[i], Good_Color));  // highlight cuz why not?
-                yield return StartCoroutine(CubeUtility.moveCube(left[i], destination));       // move boahhh
+                yield return StartCoroutine(CubeUtility.moveCube(left[i], destination));       // move!!!
 
 
                 i++;
@@ -125,11 +162,11 @@ public class MergeSortScript : MonoBehaviour
 
                 // prepare to move the cube we just added, up a level (y-axis)
                 // unmerged_list has the x and z positions in order, now to move the cubes.
-                Vector3 destination = unmerged_list[i + j].transform.position;
-                destination = new Vector3 ( destination.x, destination.y + 5, destination.z);   // move up
+                Vector3 destination = unmerged_vector_list[i + j];
+                destination = new Vector3 ( destination.x, destination.y + 1.5f, destination.z);   // position up
 
                 yield return StartCoroutine(CubeUtility.PulseHighlight(right[j], Good_Color));  // highlight cuz why not?
-                yield return StartCoroutine(CubeUtility.moveCube(right[j], destination));       // move boahhh
+                yield return StartCoroutine(CubeUtility.moveCube(right[j], destination));       // move!!!
 
                 j++;
             }
@@ -139,9 +176,10 @@ public class MergeSortScript : MonoBehaviour
             // move the remaining cubes - all at once. Left side
             for (; i < left.Count; i++)
             {
-                Vector3 destination = unmerged_list[i + j].transform.position;  // TODO test if works
-                destination = new Vector3(destination.x, destination.y + 5, destination.z);
+                Vector3 destination = unmerged_vector_list[i + j];  // why i+j? Thats what my brain decide on.... nah-jk it's kinda complicated
+                destination = new Vector3(destination.x, destination.y + 1.5f, destination.z);
 
+                
                 StartCoroutine(CubeUtility.moveCube(left[i], destination));
             }
 
@@ -153,13 +191,13 @@ public class MergeSortScript : MonoBehaviour
             // move the remaining cubes - all at once. Right side
             for (; j < right.Count; j++)
             {
-                Vector3 destination = unmerged_list[i + j].transform.position;  // TODO test if works
-                destination = new Vector3(destination.x, destination.y + 5, destination.z);
+                Vector3 destination = unmerged_vector_list[i + j];
+                destination = new Vector3(destination.x, destination.y + 1.5f, destination.z);
 
                 StartCoroutine(CubeUtility.moveCube(right[j], destination));
             }
 
-            yield return new WaitForSeconds(1); // wait
+            yield return new WaitForSeconds(1.5f); // wait
 
         }
     }

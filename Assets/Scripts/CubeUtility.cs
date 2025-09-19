@@ -368,9 +368,9 @@ public class CubeUtility : MonoBehaviour
     // Uses Sinusoidal functions to impliment floating behaviour
     public static void floatCubes(List<GameObject> cube_list)
     {
-        // Scale factor of 3000 for Unity
-        // Scale factor of 300 for Spatial VR
-        const int SCALE = 300;
+        // Scale factor of 4000 for Unity
+        // Scale factor of 400 for Spatial VR
+        const int SCALE = 400;
 
         for (int i = 0; i < cube_list.Count; i++)
         {
