@@ -62,24 +62,18 @@ public class BubbleSortScript : MonoBehaviour
                 yield return new WaitForSeconds(0.3f);
                 liveText.syncLiveText(4);   // if statement
 
-                // highlight tile1
                 // Highlight two cubes being compared
-                // wait for highlighting to finish
+                yield return StartCoroutine(CubeUtility.PulseHighlight(bubblesort_cubes[j], bubblesort_cubes[j + 1], Check_Color, Check_TIME));
 
-                yield return StartCoroutine(CubeUtility.PulseHighlight(bubblesort_cubes[j + 1], Check_Color, Check_TIME));
-
-                // highlit tile 2
                 // this translates to [j] > [j + 1]
                 if (int.Parse(bubblesort_cubes[j].name) >
                     int.Parse(bubblesort_cubes[j + 1].name))
                 {
                     liveText.syncLiveText(5);   // swap
 
-                    // Highlight two cubes being swapped
-                    // dont wait for highlighting to finish
-                    StartCoroutine(CubeUtility.PulseHighlight(bubblesort_cubes[j], Swap_Color, Swap_TIME));
-                    StartCoroutine(CubeUtility.PulseHighlight(bubblesort_cubes[j + 1], Swap_Color, Swap_TIME));
-                    //wait for swapping to finish
+                    // Highlight two cubes being swapped-dont wait for animation to finish
+                    StartCoroutine(CubeUtility.PulseHighlight(bubblesort_cubes[j], bubblesort_cubes[j + 1], Swap_Color, Swap_TIME));
+                    // swapping animation
                     yield return StartCoroutine(CubeUtility.swapCubesHorizontally(bubblesort_cubes, j, j + 1, this));
 
 
@@ -92,9 +86,7 @@ public class BubbleSortScript : MonoBehaviour
                 {
 
                     // Highlight two cubes being swapped
-                    // wait for highlighting to finish
-                    StartCoroutine(CubeUtility.PulseHighlight(bubblesort_cubes[j], Good_Color, Check_TIME));
-                    yield return StartCoroutine(CubeUtility.PulseHighlight(bubblesort_cubes[j + 1], Good_Color, Check_TIME));
+                    yield return StartCoroutine(CubeUtility.PulseHighlight(bubblesort_cubes[j], bubblesort_cubes[j + 1], Good_Color, Check_TIME));
                 }
             }
         }

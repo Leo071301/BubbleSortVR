@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -35,13 +36,15 @@ public class LiveTextUtility : MonoBehaviour
     [SerializeField] public string highlight_end = "</mark>";
 
 
-    [Range(0, 10)]               // allow slider in the inspector
+    [Range(0, 23)]               // allow slider in the inspector
     [SerializeField] public int previewIndex = 0;   // which text element we will preview
 
     [TextArea(5, 20)]           // allow text entry in the inspector
     public List<string> text_list;
 
 
+    // Simply change textMeshPro's text contents
+    // I hate using magic numbers, but I cant think of anything better. Or I could make a giant list of Enum's
     public void syncLiveText(int index)
     {
         // make sure text-object is attached!
@@ -55,6 +58,22 @@ public class LiveTextUtility : MonoBehaviour
         textMeshPro.text = text_list[index];
     }
 
+    // Co-routine - Change textMeshPro's text contents
+    // with a delay, given ftime as a float
+    public IEnumerator syncLiveTextWait(int index, float time_)
+    {
+        // make sure text-object is attached!
+        if (textMeshPro == null)
+        {
+            Debug.Log("Please attach a TextMeshPro to this Object!!! ");
+            yield break;
+        }
+
+        yield return new WaitForSeconds(time_);
+        textMeshPro.text = text_list[index];
+    }
+
+
     private void OnValidate()
     {
         previousMark = highlight_start;
@@ -64,7 +83,7 @@ public class LiveTextUtility : MonoBehaviour
 
         for (int i = 0; i < text_list.Count; i++)
         {
-            text_list[i] = text_list[i].Replace(previousMark, highlight_start);
+            text_list[i] = text_list[i].Replace(previousMark, highlight_start);     // nice and nifty handy dandy convinient function
         }
 
         

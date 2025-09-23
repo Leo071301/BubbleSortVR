@@ -349,10 +349,35 @@ public class CubeUtility : MonoBehaviour
         // keep changing colors untill target color is reached
         while (timeElapsed < highlight_time && m_renderer != null)
         {
-            timeElapsed += Time.deltaTime * 1.5f / highlight_time;
+            timeElapsed += Time.deltaTime * 1.5f / highlight_time;          // i forgot how this works :skull-emoji: wtf does this do??!?!
 
             //m_renderer.material.color = Color.Lerp(tartet_color, current_color, Mathf.PingPong(timeElapsed , 1));
             m_renderer.material.color = Color.Lerp(current_color, target_color, timeElapsed);
+            yield return null;
+        }
+
+    }
+
+    public static IEnumerator PulseHighlight(GameObject obj1, GameObject obj2, Color color_in, float highlight_time = 1.5f)
+    {
+        float timeElapsed = 0f;
+
+        // the target color will be it's current 
+        Color current_color = color_in;
+
+        MeshRenderer m_renderer1 = obj1.GetComponent<MeshRenderer>();
+        MeshRenderer m_renderer2 = obj2.GetComponent<MeshRenderer>();
+
+        Color target_color = m_renderer1.material.color;    // ill just assume they share the same material-color
+
+        // keep changing colors untill target color is reached
+        while (timeElapsed < highlight_time && m_renderer1 != null)
+        {
+            timeElapsed += Time.deltaTime * 1.5f / highlight_time;
+
+            //m_renderer.material.color = Color.Lerp(tartet_color, current_color, Mathf.PingPong(timeElapsed , 1));
+            m_renderer1.material.color = Color.Lerp(current_color, target_color, timeElapsed);
+            m_renderer2.material.color = Color.Lerp(current_color, target_color, timeElapsed);
             yield return null;
         }
 
@@ -367,17 +392,17 @@ public class CubeUtility : MonoBehaviour
 
     // Uses Sinusoidal functions to impliment floating behaviour
     public static void floatCubes(List<GameObject> cube_list)
-    {
-        // Scale factor of 4000 for Unity
-        // Scale factor of 400 for Spatial VR
-        const int SCALE = 400;
+    { 
+        // Scale factor of 8000 for Unity
+        // Scale factor of 800 for Spatial VR
+        const int SCALE = 800;
 
         for (int i = 0; i < cube_list.Count; i++)
         {
             cube_list[i].transform.position = new Vector3(
                 cube_list[i].transform.position.x,
-                cube_list[i].transform.position.y + Mathf.Sin(Time.time + i) / SCALE,
-                cube_list[i].transform.position.z + Mathf.Sin(Time.time + i) / SCALE * 2);
+                cube_list[i].transform.position.y + Mathf.Sin(Time.time + i) / SCALE ,
+                cube_list[i].transform.position.z + Mathf.Sin(Time.time + i) / SCALE );
         }
     }
 
