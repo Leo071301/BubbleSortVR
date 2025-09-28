@@ -13,15 +13,14 @@ using UnityEngine;
 public class PanelScript : MonoBehaviour
 {
     [NonSerialized]
-    private Vector3 visible_position;
-
-    [SerializeField]
-    public Vector3 hiding_position = new Vector3 (0, -100, 0);
+    private Vector3 visible_scale;
+    private Vector3 invisible_scale = Vector3.zero;
+    private const float speed = 5.0f;
 
     void Start()
     {
-        visible_position = transform.localPosition;     // store world-position before the game starts
-        transform.position = hiding_position;           // move out of sight, at the start of the game
+        visible_scale = transform.localScale;           // store scale before the game starts,
+        transform.localScale = invisible_scale;         // this will make it seem like its hidden
 
     }
 
@@ -30,22 +29,36 @@ public class PanelScript : MonoBehaviour
      * Usefull Coroutine Animations
      * 
      */
-    
+
+    // Spawn in via linear interpolation, the panel will pop-up from nothing -> into its original size
     public IEnumerator SpawnIn()
     {
+        gameObject.SetActive(true);
 
-        yield return StartCoroutine(CubeUtility.moveCube(gameObject, visible_position));
+        float move_time = Time.deltaTime * speed; // seconds
+        const float fTHRESHOLD = 0.1f;
 
-        yield return new WaitForSeconds(0.2f);
-        Debug.Log(transform.position);
+        // keep moving until reaches destination
+        while (Vector3.Distance(transform.localScale, visible_scale) > fTHRESHOLD)
+        {
+            transform.localScale = Vector3.Lerp(transform.localScale, visible_scale, move_time);
+            yield return null;  // pause, and come back next frame
+        }
     }
     
     public IEnumerator Despawn()
     {
-        yield return StartCoroutine(CubeUtility.moveCube(gameObject, hiding_position));
+        float move_time = Time.deltaTime * speed; // seconds
+        const float fTHRESHOLD = 0.1f;
 
-        yield return new WaitForSeconds(0.2f);
+        // keep moving until reaches destination
+        while (Vector3.Distance(transform.localScale, invisible_scale) > fTHRESHOLD)
+        {
+            transform.localScale = Vector3.Lerp(transform.localScale, invisible_scale, move_time);
+            yield return null;  // pause, and come back next frame
+        }
+
+        gameObject.SetActive(false);
     }
-
 }
 

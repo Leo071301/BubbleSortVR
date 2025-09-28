@@ -13,26 +13,29 @@ public class MergeSortScript : MonoBehaviour
     [SerializeField] public LiveAudioUtility liveAudio;     // script enables syncing of audio
     [SerializeField] public PanelScript textPanel;          // script enables movement of panel
 
-    [SerializeField] public List<int> number_list; // list given through the inspector tab
+    [SerializeField] public List<int> number_list;  // list given through the inspector tab
     [SerializeField] public int Total_Spacing = 15; // spacing between the cubes 
 
-    [SerializeField] public Color default_color; // initialize default color 
-    [SerializeField] public Material material; // pass in URP shader since spatial SDK does not give it material when cubes are spontaneously made 
+    [SerializeField] public Color default_color;    // initialize default color 
+    [SerializeField] public Material material;      // pass in URP shader since spatial SDK does not give it material when cubes are spontaneously made 
+    [SerializeField] public Material material_glow;
 
-    [SerializeField] public Color Good_Color; // this color highlights both if not out of order
-    [SerializeField] public Color Swap_Color; // this color highlights when they need to swap
+    [SerializeField] public Color Good_Color;       // this color highlights both if not out of order
+    [SerializeField] public Color Swap_Color;       // this color highlights when they need to swap
     [SerializeField] public float Swap_TIME = 1.5f; // this determines how long it takes to swap
 
-    [SerializeField] public Color Check_Color; // color that highlights when its checking if it needs to be swapped
-    [SerializeField] public float Check_TIME = 1.0f; // time it takes to check if it needs to swap
+    [SerializeField] public Color Check_Color;      // color that highlights when its checking if it needs to be swapped
+    [SerializeField] public float Check_TIME = 1.0f;// time it takes to check if it needs to swap
 
     [NonSerialized]
-    private List<GameObject> mergesort_cubes = null; // list of cubes made, positioned, and programmed
-    private bool isAnimating = false; // boolean that will check to make sure multiple animations are not going over each other
+    private List<GameObject> mergesort_cubes = null;// list of cubes made, positioned, and programmed
+    private bool isAnimating = false;               // boolean that will check to make sure multiple animations are not going over each other
 
     // This variable stores the return contents of Coroutines, wack workaround but it works lol
     private List<GameObject> returnList     = null;
-    private const float text_speed = 0.4f;
+    private const float text_speed = 0.3f;
+
+    private GlowHandler glowHandler;                // enables glowing effect of cube's of Your Choosing!
 
     // Invoked by Spatial SDK Interactable
     public void MergeSortEvent()
@@ -49,6 +52,11 @@ public class MergeSortScript : MonoBehaviour
             CubeUtility.positionCubeList(mergesort_cubes, Total_Spacing, this);
         }
 
+        // initialize glow handler
+        glowHandler = new GlowHandler();
+        glowHandler.material_normal = material;
+        glowHandler.material_glow = material_glow;
+        glowHandler.Init(mergesort_cubes);  // VERY IMPORTAINT
 
         StartCoroutine(MergeSortEventHelper());
     }
@@ -63,8 +71,9 @@ public class MergeSortScript : MonoBehaviour
     {
         isAnimating = true;
         yield return StartCoroutine(CubeUtility.AnimateSpawnCubes(mergesort_cubes, this));
-        //StartCoroutine(textPanel.SpawnIn());  // TODO Fix later
+        StartCoroutine(textPanel.SpawnIn());
 
+        glowHandler.ApplyAllGlow(mergesort_cubes);      // highlight from the start
         yield return StartCoroutine(MergeSort(mergesort_cubes));
 
         // update 
@@ -78,7 +87,7 @@ public class MergeSortScript : MonoBehaviour
         }
 
         yield return StartCoroutine(CubeUtility.AnimateDestroyCubes(mergesort_cubes, this));
-        //StartCoroutine(textPanel.Despawn());  // TODO Fix later
+        StartCoroutine(textPanel.Despawn());
 
 
         liveText.syncLiveText((int)text.NO_HIGHLIGHT);
@@ -116,12 +125,16 @@ public class MergeSortScript : MonoBehaviour
         yield return liveText.syncLiveTextWait((int)text.RIGHTHALF, text_speed);
 
 
-        // highlight left half
+        // left Half
+        glowHandler.ResetApplyGlowMaterial(mergesort_cubes, lefthalf);  // Highlight left
 
         yield return liveText.syncLiveTextWait((int)text.SORTEDLEFT, text_speed);
         yield return StartCoroutine(MergeSort(lefthalf));
         yield return liveText.syncLiveTextWait((int)text.SORTEDLEFT, text_speed);
         List<GameObject> sortedLeft = returnList;
+
+        // right Half
+        glowHandler.ResetApplyGlowMaterial(mergesort_cubes, righthalf);  // Highlight right
 
         yield return liveText.syncLiveTextWait((int)text.SORTEDRIGHT, text_speed);
         yield return StartCoroutine(MergeSort(righthalf));
@@ -129,6 +142,8 @@ public class MergeSortScript : MonoBehaviour
         List<GameObject> sortedRight = returnList;
 
         // perform merging
+        glowHandler.ResetApplyGlowMaterial(mergesort_cubes, sortedLeft.Concat(sortedRight).ToList());  // Highlight the 2 halves
+
         yield return liveText.syncLiveTextWait((int)text.RETURN_MERGE, text_speed);
         yield return StartCoroutine(Merge(sortedLeft, sortedRight));
         yield return liveText.syncLiveTextWait((int)text.RETURN_MERGE, text_speed / 2);

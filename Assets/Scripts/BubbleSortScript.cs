@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -19,6 +20,7 @@ public class BubbleSortScript : MonoBehaviour
 
     [SerializeField] public Color default_Color;
     [SerializeField] public Material material;      // pass in URP shader - because Spatial SDK provides no support for loading resources
+    [SerializeField] public Material material_glow; 
 
     [SerializeField] public Color Good_Color;       // color if no swap needed
     [SerializeField] public Color Swap_Color;       // swap needed
@@ -30,8 +32,8 @@ public class BubbleSortScript : MonoBehaviour
     [NonSerialized]
     private List<GameObject> bubblesort_cubes = null;       // Cubes created, positioned, and programmed by this script
     private bool isAnimating = false;                       // dont want to run multiple animations over eachother
+    GlowHandler glowHandler;                                // enables glowing effect of cube's of Your Choosing!
 
-    
 
     // Coroutine performs the BubbleSort Animation
     public IEnumerator BubbleSortAnimation()
@@ -45,22 +47,20 @@ public class BubbleSortScript : MonoBehaviour
         //https://www.w3schools.com/dsa/dsa_algo_bubblesort.php
         int n = bubblesort_cubes.Count;
 
-        liveText.syncLiveText(1);
-        yield return new WaitForSeconds(1); // wait 3 sec
+        liveText.syncLiveTextWait((int)text.N_LENARRAY, 1.0f);  // 1 second wait
 
         for (int i = 0; i < n - 1; i++)
         {
-            liveText.syncLiveText(2);   // for i
-            yield return new WaitForSeconds(0.3f);
+            liveText.syncLiveTextWait((int)text.FOR_I, 0.2f);
             
-            // highlight tile0
             for (int j = 0; j < n - i - 1; j++)
             {
+                // highlight the cube's to be sorted! Will leave sorted cube's un-highlighted
+                glowHandler.ResetApplyGlowMaterial(bubblesort_cubes, bubblesort_cubes.Take(n-i).ToList());
 
-                liveText.syncLiveText(3);   // for j
 
-                yield return new WaitForSeconds(0.3f);
-                liveText.syncLiveText(4);   // if statement
+                liveText.syncLiveTextWait((int)text.FOR_J, 0.2f);
+                liveText.syncLiveText((int)text.IF);
 
                 // Highlight two cubes being compared
                 yield return StartCoroutine(CubeUtility.PulseHighlight(bubblesort_cubes[j], bubblesort_cubes[j + 1], Check_Color, Check_TIME));
@@ -69,7 +69,7 @@ public class BubbleSortScript : MonoBehaviour
                 if (int.Parse(bubblesort_cubes[j].name) >
                     int.Parse(bubblesort_cubes[j + 1].name))
                 {
-                    liveText.syncLiveText(5);   // swap
+                    liveText.syncLiveTextWait((int)text.SWAP, 0.2f);
 
                     // Highlight two cubes being swapped-dont wait for animation to finish
                     StartCoroutine(CubeUtility.PulseHighlight(bubblesort_cubes[j], bubblesort_cubes[j + 1], Swap_Color, Swap_TIME));
@@ -91,7 +91,8 @@ public class BubbleSortScript : MonoBehaviour
             }
         }
 
-        liveText.syncLiveText(0);   // back to no text highlighting
+        liveText.syncLiveText((int)text.NO_HIGHLIGHT);
+        glowHandler.ResetAllGlow(bubblesort_cubes);
 
         // cool finished-animation
         foreach (var cube in bubblesort_cubes)
@@ -124,29 +125,14 @@ public class BubbleSortScript : MonoBehaviour
             CubeUtility.positionCubeList(bubblesort_cubes, Total_Spacing, this);
         }
 
+        // initialize glow handler
+        glowHandler = new GlowHandler();
+        glowHandler.material_normal = material;
+        glowHandler.material_glow = material_glow;
+        glowHandler.Init(bubblesort_cubes);  // VERY IMPORTAINT 
+
         StartCoroutine(BubbleSortAnimation());
     }
-
-    /*
-     *  This is broken ASF, you can ignore this rip lol
-     * private void OnValidate()
-    {
-        if (preview)
-        {
-            bubblesort_cubes = null;    //delete previous-preview 
-            bubblesort_cubes = CubeUtility.createCubeList(number_list, material, default_Color);
-
-            // position cubes using the 'Transform' component
-            CubeUtility.positionCubeList(bubblesort_cubes, Total_Spacing, this);
-        }
-        else
-        {
-            if (bubblesort_cubes != null)
-            {
-                bubblesort_cubes = null;
-            }
-        }
-    }*/
 
     void Start()
     {
@@ -161,5 +147,15 @@ public class BubbleSortScript : MonoBehaviour
         // Only when the cubes exist (created on event)
         if (bubblesort_cubes != null)
             CubeUtility.floatCubes(bubblesort_cubes);
+    }
+
+    public enum text
+    {
+        NO_HIGHLIGHT = 0,
+        N_LENARRAY,
+        FOR_I,
+        FOR_J,
+        IF,
+        SWAP = 5
     }
 }

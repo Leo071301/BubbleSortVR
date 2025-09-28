@@ -164,7 +164,7 @@ public class CubeUtility : MonoBehaviour
     public static IEnumerator moveCube(GameObject cube, Vector3 destination, float speed = 8)
     {
         float move_time = Time.deltaTime * speed; // seconds
-        float fTHRESHOLD = 0.1f;
+        const float fTHRESHOLD = 0.1f;
 
         // keep moving until reaches destination
         while (Vector3.Distance(cube.transform.localPosition, destination) > fTHRESHOLD)
@@ -288,6 +288,7 @@ public class CubeUtility : MonoBehaviour
     */
     public static IEnumerator AnimateSpawnCubes(List<GameObject> cube_list, MonoBehaviour invokingClass)
     {
+        
         foreach (var cube in cube_list)
         {
             Vector3 destination = cube.transform.position;
@@ -314,7 +315,7 @@ public class CubeUtility : MonoBehaviour
             destination = new Vector3(destination.x, destination.y - 15, destination.z);
 
             // BEGONE!!!
-            invokingClass.StartCoroutine(moveCube(cube, destination));
+            invokingClass.StartCoroutine(moveCube(cube, destination, 5));
         }
 
         yield return new WaitForSeconds(1);     // wait before destroying objects
@@ -383,6 +384,7 @@ public class CubeUtility : MonoBehaviour
 
     }
 
+
     /* * * * * * * * * * * * * * * * * * * * * * * *
      * 
      *  Good-To-Have Behaviour
@@ -405,7 +407,6 @@ public class CubeUtility : MonoBehaviour
                 cube_list[i].transform.position.z + Mathf.Sin(Time.time + i) / SCALE );
         }
     }
-
 
 }
 

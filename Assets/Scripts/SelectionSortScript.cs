@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -19,6 +20,7 @@ public class SelectionSortScript : MonoBehaviour
 
     [SerializeField] public Color default_Color;
     [SerializeField] public Material material;      // pass in URP shader - because Spatial SDK provides no support for loading resources
+    [SerializeField] public Material material_glow;
 
     [SerializeField] public Color Good_Color;       // color if no swap needed
     [SerializeField] public Color Caution_Color;       // swap needed
@@ -29,9 +31,8 @@ public class SelectionSortScript : MonoBehaviour
 
     [NonSerialized]
     private List<GameObject> selectionsort_cubes = null;       // Cubes created, positioned, and programmed by this script
-    private bool isAnimating = false;                       // dont want to run multiple animations over eachother
-
-
+    private bool    isAnimating = false;                       // dont want to run multiple animations over eachother
+    GlowHandler     glowHandler;
 
     // Coroutine performs the SelectionSort Animation
     public IEnumerator SelectionSortAnimation()
@@ -44,23 +45,22 @@ public class SelectionSortScript : MonoBehaviour
         //https://www.w3schools.com/dsa/dsa_algo_selectionsort.php
         int n = selectionsort_cubes.Count;
 
-        liveText.syncLiveText(1);
+        liveText.syncLiveText((int)text.N_LENARRAY);
 
         for (int i = 0; i < n - 1; i++)
         {
-            liveText.syncLiveText(2);   // for i
-            yield return new WaitForSeconds(0.5f);
-            liveText.syncLiveText(3);   // min_index
+            glowHandler.ResetApplyGlowMaterial(selectionsort_cubes, selectionsort_cubes.Skip(i).ToList());
+
+            liveText.syncLiveTextWait((int)text.FOR_I,      0.5f);// wait 1/2 second
+            liveText.syncLiveTextWait((int)text.MIN_INDEX_I,0.25f);// wait 1/4 second
 
             int min_index = i;
 
             for (int j = i + 1; j < n; j++)
             {
-                liveText.syncLiveText(4);   // for j
 
-                yield return new WaitForSeconds(0.3f);
-                liveText.syncLiveText(5);   // if statement
-                yield return new WaitForSeconds(0.3f);
+                liveText.syncLiveTextWait((int)text.FOR_J,  0.3f);
+                liveText.syncLiveTextWait((int)text.IF,     0.3f);
 
                 // Highlight two cubes being compared
                 StartCoroutine(CubeUtility.PulseHighlight(selectionsort_cubes[j], Check_Color, Check_TIME));
@@ -71,7 +71,7 @@ public class SelectionSortScript : MonoBehaviour
                 if (int.Parse(selectionsort_cubes[j].name) <
                     int.Parse(selectionsort_cubes[min_index].name))
                 {
-                    liveText.syncLiveText(6);   // swap
+                    liveText.syncLiveText((int)text.MIN_INDEX_J);
                     yield return StartCoroutine(CubeUtility.PulseHighlight(selectionsort_cubes[min_index], Caution_Color, Caution_TIME));
 
                     min_index = j;
@@ -82,7 +82,7 @@ public class SelectionSortScript : MonoBehaviour
 
             }
 
-            liveText.syncLiveText(7);   // if statement
+            liveText.syncLiveText((int)text.MINVALUE);
 
             // Highlight cube to be inserted
             // dont wait for highlighting to finish
@@ -100,6 +100,7 @@ public class SelectionSortScript : MonoBehaviour
         }
 
         liveText.syncLiveText(0);   // back to no text highlighting
+        glowHandler.ResetAllGlow(selectionsort_cubes);
 
         // cool finished-animation
         foreach (var cube in selectionsort_cubes)
@@ -132,6 +133,12 @@ public class SelectionSortScript : MonoBehaviour
             CubeUtility.positionCubeList(selectionsort_cubes, Total_Spacing, this);
         }
 
+        // initialize glow handler
+        glowHandler = new GlowHandler();
+        glowHandler.material_normal = material;
+        glowHandler.material_glow = material_glow;
+        glowHandler.Init(selectionsort_cubes);  // VERY IMPORTAINT 
+
         StartCoroutine(SelectionSortAnimation());
     }
 
@@ -148,5 +155,17 @@ public class SelectionSortScript : MonoBehaviour
         // Only when the cubes exist (created on event)
         if (selectionsort_cubes != null)
             CubeUtility.floatCubes(selectionsort_cubes);
+    }
+
+    public enum text
+    {
+        NO_HIGHLIGHT = 0,
+        N_LENARRAY,
+        FOR_I,
+        MIN_INDEX_I,
+        FOR_J,
+        IF,
+        MIN_INDEX_J,
+        MINVALUE = 7
     }
 }
