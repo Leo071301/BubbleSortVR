@@ -1,0 +1,81 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class QuickSortScript : MonoBehaviour
+{
+    // SerializableFields are set in the "Inspector" via unity
+    [SerializeField] public LiveTextUtility liveText;       // script enables syncing of text
+    [SerializeField] public LiveAudioUtility liveAudio;     // script enables syncing of audio
+    [SerializeField] public PanelScript textPanel;          // script enables movement of panel
+
+    [SerializeField] public List<int> number_list;  // list given through the inspector tab
+    [SerializeField] public int Total_Spacing = 15; // spacing between the cubes 
+
+    [SerializeField] public Color default_color;    // initialize default color 
+    [SerializeField] public Material material;      // pass in URP shader since spatial SDK does not give it material when cubes are spontaneously made 
+    [SerializeField] public Material material_glow;
+
+    [SerializeField] public Color Good_Color;       // this color highlights both if not out of order
+    [SerializeField] public Color Swap_Color;       // this color highlights when they need to swap
+    [SerializeField] public float Swap_TIME = 1.5f; // this determines how long it takes to swap
+
+    [SerializeField] public Color Check_Color;      // color that highlights when its checking if it needs to be swapped
+    [SerializeField] public float Check_TIME = 1.0f;// time it takes to check if it needs to swap
+
+    [NonSerialized]
+    private List<GameObject> mergesort_cubes = null;// list of cubes made, positioned, and programmed
+    private bool isAnimating = false;               // boolean that will check to make sure multiple animations are not going over each other
+    private const float text_speed = 0.3f;
+
+    private GlowHandler glowHandler;                // enables glowing effect of cube's of Your Choosing!
+
+
+    // Enumerations corespond to index's in the quick-sort Live Text Utility
+    public enum text
+    {
+        None,
+    }
+
+    void Start()
+    {
+        
+    }
+
+    void Update()
+    {
+        
+    }
+
+    // Invoked by Spatial SDK Interactable
+
+    public void MergeSortEvent()
+    {
+
+    }
+
+    // Intermediate-step inbetween 
+    //
+    // Event    ->  Helper  -> QuickSort()
+    //
+    // This co-routine simply displays animations prior to the "recursive quicksort" crazyness
+    public IEnumerator QuickSortHelper()
+    {
+        yield return null;
+    }
+
+    // As reference: https://www.w3schools.com/dsa/dsa_algo_quicksort.php
+    // Recursive Calls Ahead!
+    // Animtion include: syncing text, audio, glow, cube-movements, and the sorting animation
+    public IEnumerator QuickSort()
+    {
+        yield return null;
+    }
+
+    public IEnumerator Partition()
+    {
+        yield return null;
+    }
+
+}

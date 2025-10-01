@@ -256,7 +256,7 @@ public class MergeSortScript : MonoBehaviour
 
     void Start()
     {
-        liveText.syncLiveText(0);
+        liveText.syncLiveText((int)text.NO_HIGHLIGHT);
     }
 
     void Update()
