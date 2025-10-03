@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 
@@ -303,22 +302,22 @@ public class CubeUtility : MonoBehaviour
     }
 
     /*
-    * Animates each cube sequentially, placing cubes 10 units below its y-level and 
-    * destroying cubes
+    * Animates each cube sequentially, shrinking its local-scale untill it reaches 0. Then
+    * destroy the cubes
     */
     public static IEnumerator AnimateDestroyCubes(List<GameObject> cube_list, MonoBehaviour invokingClass)
     {
-        foreach (var cube in cube_list)
+        float move_time = Time.deltaTime * 5; // seconds
+        const float fTHRESHOLD = 0.1f;
+
+        // keep moving until reaches destination
+        while (Vector3.Distance(cube_list[0].transform.localScale, Vector3.zero) > fTHRESHOLD)
         {
-            Vector3 destination = cube.transform.position;
-
-            destination = new Vector3(destination.x, destination.y - 15, destination.z);
-
-            // BEGONE!!!
-            invokingClass.StartCoroutine(moveCube(cube, destination, 5));
+            foreach (var cube in cube_list)
+                cube.transform.localScale = Vector3.Lerp(cube.transform.localScale, Vector3.zero, move_time);
+            
+            yield return null;  // pause, and come back next frame
         }
-
-        yield return new WaitForSeconds(1);     // wait before destroying objects
 
         foreach (var cube in cube_list)
         {

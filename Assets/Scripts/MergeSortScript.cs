@@ -55,7 +55,7 @@ public class MergeSortScript : MonoBehaviour
         // initialize glow handler
         glowHandler = new GlowHandler();
         glowHandler.material_normal = material;
-        glowHandler.material_glow = material_glow;
+        glowHandler.material_glow   = material_glow;
         glowHandler.Init(mergesort_cubes);  // VERY IMPORTAINT
 
         StartCoroutine(MergeSortEventHelper());
