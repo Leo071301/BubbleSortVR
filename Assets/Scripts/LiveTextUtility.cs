@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -27,20 +29,30 @@ using UnityEngine;
 public class LiveTextUtility : MonoBehaviour
 {
     // TextMeshProp object to be passed in
+    [Header("Drag in the Text-Mesh-Pro to attach!")]
     [SerializeField] public TextMeshPro textMeshPro = null;
     [SerializeField] public Color highlightColor;
     private string previousMark;    // store for cache
 
     // magical markup highlight trick. 
+    [Header("HTML Tags")]
     [SerializeField] public string highlight_start = "<mark=#000000>";
     [SerializeField] public string highlight_end = "</mark>";
+    [Space]
 
-
+    [Header("Preview the Text-Mesh-Pro object! Ignore the errors lol")]
     [Range(0, 23)]               // allow slider in the inspector
     [SerializeField] public int previewIndex = 0;   // which text element we will preview
 
+    [Space]
     [TextArea(5, 20)]           // allow text entry in the inspector
     public List<string> text_list;
+
+
+    [Header("Inorder to Auto Generate the text list")]
+    [Header("create only ONE text entry, format it to your liking")]
+    [Header("and then-> click this check")]
+    public bool Auto_Generate_TextList = false;
 
 
     // Simply change textMeshPro's text contents
@@ -88,6 +100,32 @@ public class LiveTextUtility : MonoBehaviour
 
         
         syncLiveText(previewIndex);
+
+        // Auto Generate list of text's
+        if (text_list.Count != 1)   return;     // has to be size = 1
+        if (!Auto_Generate_TextList) return;    // flag has to be on
+
+        Auto_Generate_TextList = false;
+
+
+        string text_base = text_list[0];
+        int prev_delim_index = 0;
+
+        // Repeat for however many "\n" delimiters are found
+
+        for (int i = 0; i < text_list[0].Count(); i++)
+        {
+            // append new text_base
+            text_list.Add(text_base);
+
+            // now add the HTML tags
+            text_list[i].Insert(prev_delim_index, highlight_start);   // first "\n"
+
+            prev_delim_index = text_base.IndexOf("\n", prev_delim_index + 1);   // update delim index
+            Debug.Log(prev_delim_index);
+            text_list[i].Insert(prev_delim_index, highlight_end);     // next "\n"
+
+        }
 
     }
 

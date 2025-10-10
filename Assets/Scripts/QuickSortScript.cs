@@ -83,8 +83,22 @@ public class QuickSortScript : MonoBehaviour
         yield return StartCoroutine(CubeUtility.AnimateSpawnCubes(quicksort_cubes, this));
         //StartCoroutine(textPanel.SpawnIn());
 
+        float starting_y = quicksort_cubes[0].transform.position.y; // for reference!
+
         glowHandler.ApplyAllGlow(quicksort_cubes);      // highlight from the start
         yield return StartCoroutine(QuickSort(quicksort_cubes));
+
+
+        // Move sorted list "back down" to starting y-axis
+        foreach (var cube in quicksort_cubes)
+        {
+            Vector3 destination = new Vector3(cube.transform.position.x,
+                                                    starting_y,
+                                                    cube.transform.position.z);
+            yield return StartCoroutine(CubeUtility.moveCube(cube, destination));   // move!
+        }
+
+        glowHandler.ApplyAllGlow(quicksort_cubes);      // highlight from the start
 
         // cool finished-animation
         foreach (var cube in quicksort_cubes)
@@ -110,7 +124,7 @@ public class QuickSortScript : MonoBehaviour
         if (high == -1)
             high = list.Count - 1;
 
-        glowHandler.ResetApplyGlowMaterial(quicksort_cubes, list.Skip(low).Take(high-low).ToList());  // glow sub-list
+        glowHandler.ResetApplyGlowMaterial(quicksort_cubes, list.Skip(low).Take(high-low + 1).ToList());  // glow sub-list
 
 
         if (low < high)
@@ -128,6 +142,18 @@ public class QuickSortScript : MonoBehaviour
 
     public IEnumerator Partition(List<GameObject> list, int low, int high)
     {
+
+        // Note:
+        // Prior to aniomation, move the sub-list of cubes "up" a layer (Y-axis). 1.3 Units
+        foreach (var cube in list.Skip(low).Take(high - low + 1).ToList())
+        {
+            Vector3 destination = new Vector3(cube.transform.position.x,
+                                                    cube.transform.position.y + 1.2f,
+                                                    cube.transform.position.z);
+            yield return StartCoroutine(CubeUtility.moveCube(cube, destination, 12));   // move!
+        }
+
+
         glowHandler.ResetApplyGlowMaterial(quicksort_cubes, list.Skip(low).Take(high - low + 1).ToList());  // glow sub-list
 
         int pivot = int.Parse(list[high].name); // to int
@@ -136,6 +162,8 @@ public class QuickSortScript : MonoBehaviour
 
         for (int j = low; j < high; j++)
         {
+
+            yield return StartCoroutine(CubeUtility.PulseHighlight(list[j], list[pivot], Check_Color, Check_TIME));
             if ( int.Parse(list[j].name) <= pivot ) // to int
             {
                 i++;
@@ -146,6 +174,9 @@ public class QuickSortScript : MonoBehaviour
                 // Fast C# Swap
                 (list[i], list[j]) = (list[j], list[i]);
             }
+            else
+                yield return StartCoroutine(CubeUtility.PulseHighlight(list[j], list[pivot], Good_Color, Check_TIME / 2));
+
         }
 
         // swap animation

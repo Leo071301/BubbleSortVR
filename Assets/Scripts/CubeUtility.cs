@@ -373,7 +373,7 @@ public class CubeUtility : MonoBehaviour
         // keep changing colors untill target color is reached
         while (timeElapsed < highlight_time && m_renderer1 != null)
         {
-            timeElapsed += Time.deltaTime * 1.5f / highlight_time;
+            timeElapsed += Time.deltaTime * 2.5f / highlight_time;
 
             //m_renderer.material.color = Color.Lerp(tartet_color, current_color, Mathf.PingPong(timeElapsed , 1));
             m_renderer1.material.color = Color.Lerp(current_color, target_color, timeElapsed);
