@@ -16,6 +16,7 @@ public class InsertionSortScript : MonoBehaviour
 
     [SerializeField] public Color default_color; // initialize default color 
     [SerializeField] public Material material; // pass in URP shader since spatial SDK does not give it material when cubes are spontaneously made 
+    [SerializeField] public Material material_glow;
 
     [SerializeField] public Color Good_Color; // this color highlights both if not out of order
     [SerializeField] public Color Swap_Color; // this color highlights when they need to swap
@@ -32,8 +33,20 @@ public class InsertionSortScript : MonoBehaviour
     public IEnumerator InsertionSortAnimation()
     {
         isAnimating = true; // animation has officially started
+        yield return StartCoroutine(CubeUtility.AnimateSpawnCubes(insertionsort_cubes, this));
+        yield return StartCoroutine(textPanel.SpawnIn());
 
-        int n = insertionsort_cubes.Count; // gets amount of cubes that exist 
+
+
+        yield return StartCoroutine(CubeUtility.AnimateDestroyCubes(insertionsort_cubes, this));
+        insertionsort_cubes = null;
+        // panel goes away
+        yield return StartCoroutine(textPanel.Despawn());
+
+
+        isAnimating = false;
+
+        /*int n = insertionsort_cubes.Count; // gets amount of cubes that exist 
 
 
         for (int i = 1; i < n; i++) {
@@ -50,11 +63,8 @@ public class InsertionSortScript : MonoBehaviour
             }
             insertionsort_cubes.Insert(insert_index, insertionsort_cubes[current_value]);
         }
-
         yield return null;
-        isAnimating = false; // no longer animating 
-
-
+        isAnimating = false; // no longer animating */
 
     }
 
@@ -63,13 +73,16 @@ public class InsertionSortScript : MonoBehaviour
         if (isAnimating) return; // prevents multiple events at once
 
 
+
         // create the cubes and position them on the first interaction
-        if(insertionsort_cubes != null)
+        if (insertionsort_cubes == null)
         {
             insertionsort_cubes = CubeUtility.createCubeList(number_list, material, default_color);
 
             CubeUtility.positionCubeList(insertionsort_cubes, Total_Spacing, this);
         }
+
+        // initialize glow handler here? 
 
         StartCoroutine(InsertionSortAnimation());
     }
@@ -77,9 +90,10 @@ public class InsertionSortScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //liveText.syncLiveText(0);
+        liveText.syncLiveText(0);
+        Debug.Log("Start method has started.");
 
-        
+
     }
 
     // Update is called once per frame
@@ -89,7 +103,9 @@ public class InsertionSortScript : MonoBehaviour
 
         if(insertionsort_cubes != null)
         {
+            Debug.Log("About to float cubes");
             CubeUtility.floatCubes(insertionsort_cubes);
+            Debug.Log("float cubes created");
         }
         
     }
