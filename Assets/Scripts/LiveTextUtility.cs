@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -48,10 +47,7 @@ public class LiveTextUtility : MonoBehaviour
     [TextArea(5, 20)]           // allow text entry in the inspector
     public List<string> text_list;
 
-
-    [Header("Inorder to Auto Generate the text list")]
-    [Header("create only ONE text entry, format it to your liking")]
-    [Header("and then-> click this check")]
+    [Header("Create only ONE text entry, and then-> click this check")]
     public bool Auto_Generate_TextList = false;
 
 
@@ -108,22 +104,29 @@ public class LiveTextUtility : MonoBehaviour
         Auto_Generate_TextList = false;
 
 
-        string text_base = text_list[0];
+        string TEXT_BASE = text_list[0];
+
+        const int LEN_OF_HTMLTAG = 16;
         int prev_delim_index = 0;
 
         // Repeat for however many "\n" delimiters are found
-
+        // Im pissed at how long it took me to debug this smh
         for (int i = 0; i < text_list[0].Count(); i++)
         {
             // append new text_base
-            text_list.Add(text_base);
+            text_list.Add(TEXT_BASE);
 
             // now add the HTML tags
-            text_list[i].Insert(prev_delim_index, highlight_start);   // first "\n"
+            text_list[i] = text_list[i].Insert(prev_delim_index, highlight_start);   // first "\n"
 
-            prev_delim_index = text_base.IndexOf("\n", prev_delim_index + 1);   // update delim index
-            Debug.Log(prev_delim_index);
-            text_list[i].Insert(prev_delim_index, highlight_end);     // next "\n"
+            prev_delim_index = TEXT_BASE.IndexOf("\n", prev_delim_index + 1);   // update delim index
+            if (prev_delim_index == -1) // ONCE WE'VE REACHED THE END OF THE STRING
+            {
+                text_list[i] += highlight_end;
+                return;
+            }
+
+            text_list[i] = text_list[i].Insert(prev_delim_index + LEN_OF_HTMLTAG, highlight_end);     // next "\n"
 
         }
 

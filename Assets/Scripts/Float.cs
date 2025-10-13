@@ -11,7 +11,7 @@ using UnityEngine.UIElements;
  *  A script to simplify floating movement behaviour.
  *  Simply attach this to any gameobject u'd like. Looks nice dont ya think?
  */
-
+[ExecuteInEditMode]
 public class Float : MonoBehaviour
 {
 
