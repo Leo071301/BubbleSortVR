@@ -12,8 +12,8 @@ using UnityEngine.UIElements;
 public class AttentionArrow : MonoBehaviour
 {  
 
-    [Range(10, 150)]
-    [SerializeField] public int Rotate_Range = 70;
+    [Range(5, 50)]
+    [SerializeField] public int Rotate_Range = 20;
     [Range(0.1f, 0.5f)]
     [SerializeField] public float Scale_Range = 0.2f;
 
@@ -45,7 +45,7 @@ public class AttentionArrow : MonoBehaviour
 #endif
 
         transform.localScale = new Vector3 (    transform.localScale.x,
-                                                transform.localScale.y - ( ( Scale_Range / 10 * Mathf.Cos( Time.timeSinceLevelLoad / 5.0f) / SCALE) ),
+                                                transform.localScale.y - ( ( Scale_Range / 100 * Mathf.Cos( Time.timeSinceLevelLoad / 5.0f) / SCALE) ),
                                                 transform.localScale.z);        
 
         transform.Rotate(new Vector3(0, Rotate_Range * ( Mathf.Sin( Time.timeSinceLevelLoad / 3.0f) / SCALE ), 0));

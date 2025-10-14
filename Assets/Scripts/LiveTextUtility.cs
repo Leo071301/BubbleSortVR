@@ -40,7 +40,7 @@ public class LiveTextUtility : MonoBehaviour
     [Space]
 
     [Header("Preview the Text-Mesh-Pro object! Ignore the errors lol")]
-    [Range(0, 23)]               // allow slider in the inspector
+    [Range(0, 25)]               // allow slider in the inspector
     [SerializeField] public int previewIndex = 0;   // which text element we will preview
 
     [Space]
@@ -70,15 +70,9 @@ public class LiveTextUtility : MonoBehaviour
     // with a delay, given ftime as a float
     public IEnumerator syncLiveTextWait(int index, float time_)
     {
-        // make sure text-object is attached!
-        if (textMeshPro == null)
-        {
-            Debug.Log("Please attach a TextMeshPro to this Object!!! ");
-            yield break;
-        }
+        syncLiveText(index);
 
         yield return new WaitForSeconds(time_);
-        textMeshPro.text = text_list[index];
     }
 
 
@@ -97,6 +91,11 @@ public class LiveTextUtility : MonoBehaviour
         
         syncLiveText(previewIndex);
 
+
+
+
+
+
         // Auto Generate list of text's
         if (text_list.Count != 1)   return;     // has to be size = 1
         if (!Auto_Generate_TextList) return;    // flag has to be on
@@ -107,11 +106,12 @@ public class LiveTextUtility : MonoBehaviour
         string TEXT_BASE = text_list[0];
 
         const int LEN_OF_HTMLTAG = 16;
+        const int LEN_OF_WHITETEXT = 2;
         int prev_delim_index = 0;
 
         // Repeat for however many "\n" delimiters are found
         // Im pissed at how long it took me to debug this smh
-        for (int i = 0; i < text_list[0].Count(); i++)
+        for (int i = 1; i < text_list[0].Count() + 1; i++)
         {
             // append new text_base
             text_list.Add(TEXT_BASE);
@@ -119,13 +119,26 @@ public class LiveTextUtility : MonoBehaviour
             // now add the HTML tags
             text_list[i] = text_list[i].Insert(prev_delim_index, highlight_start);   // first "\n"
 
+            Debug.Log("absolute val: " + (TEXT_BASE.IndexOf("\n", prev_delim_index + 1) - prev_delim_index).ToString());
+            if (TEXT_BASE.IndexOf("\n", prev_delim_index + 1) == prev_delim_index + LEN_OF_WHITETEXT)  // Filter Out WHITE SPACE
+            {
+                // not the best practice
+                prev_delim_index = TEXT_BASE.IndexOf("\n", prev_delim_index + 1);   // update delim index
+                text_list.RemoveAt(text_list.Count - 1);    // No need for an "unhighlited" codeblock
+                i--;        // i hate this
+                continue;
+            }
+
             prev_delim_index = TEXT_BASE.IndexOf("\n", prev_delim_index + 1);   // update delim index
+
+
             if (prev_delim_index == -1) // ONCE WE'VE REACHED THE END OF THE STRING
             {
                 text_list[i] += highlight_end;
                 return;
             }
 
+            // now add the HTML tags
             text_list[i] = text_list[i].Insert(prev_delim_index + LEN_OF_HTMLTAG, highlight_end);     // next "\n"
 
         }

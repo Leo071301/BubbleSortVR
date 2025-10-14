@@ -34,6 +34,51 @@ public class BubbleSortScript : MonoBehaviour
     private bool isAnimating = false;                       // dont want to run multiple animations over eachother
     GlowHandler glowHandler;                                // enables glowing effect of cube's of Your Choosing!
 
+    public enum text
+    {
+        NO_HIGHLIGHT = 0,
+        N_LENARRAY,
+        FOR_I,
+        FOR_J,
+        IF,
+        SWAP = 5
+    }
+    void Start()
+    {
+        liveText.syncLiveTextWait((int)text.NO_HIGHLIGHT, 0.2f);
+    }
+
+
+    // Update is called once per frame
+    void Update()
+    {
+        // Only when the cubes exist (created on event)
+        if (bubblesort_cubes != null)
+            CubeUtility.floatCubes(bubblesort_cubes);
+    }
+
+    // Invoked by Spatial SDK Interactable
+    public void BubbleSortEvent()
+    {
+        if (isAnimating) return;        // Prevents multiple 'Events' at once
+
+        // create cubes and configure ONLY via first interaction!
+        if (bubblesort_cubes == null)
+        {
+            bubblesort_cubes = CubeUtility.createCubeList(number_list, material, default_Color);
+
+            // position cubes using the 'Transform' component
+            CubeUtility.positionCubeList(bubblesort_cubes, Total_Spacing, this);
+        }
+
+        // initialize glow handler
+        glowHandler = new GlowHandler();
+        glowHandler.material_normal = material;
+        glowHandler.material_glow = material_glow;
+        glowHandler.Init(bubblesort_cubes);  // VERY IMPORTAINT 
+
+        StartCoroutine(BubbleSortAnimation());
+    }
 
     // Coroutine performs the BubbleSort Animation
     public IEnumerator BubbleSortAnimation()
@@ -109,53 +154,5 @@ public class BubbleSortScript : MonoBehaviour
 
         isAnimating = false;
 
-    }
-
-    // Invoked by Spatial SDK Interactable
-    public void BubbleSortEvent()
-    {
-        if (isAnimating) return;        // Prevents multiple 'Events' at once
-
-        // create cubes and configure ONLY via first interaction!
-        if (bubblesort_cubes == null)
-        {
-            bubblesort_cubes = CubeUtility.createCubeList(number_list, material, default_Color);
-
-            // position cubes using the 'Transform' component
-            CubeUtility.positionCubeList(bubblesort_cubes, Total_Spacing, this);
-        }
-
-        // initialize glow handler
-        glowHandler = new GlowHandler();
-        glowHandler.material_normal = material;
-        glowHandler.material_glow = material_glow;
-        glowHandler.Init(bubblesort_cubes);  // VERY IMPORTAINT 
-
-        StartCoroutine(BubbleSortAnimation());
-    }
-
-    void Start()
-    {
-        // how to know which index is which? Set it up and check in the inspector
-        liveText.syncLiveText(0); // 0 is the index is the one that has no highlighting
-    }
-
-
-    // Update is called once per frame
-    void Update()
-    {
-        // Only when the cubes exist (created on event)
-        if (bubblesort_cubes != null)
-            CubeUtility.floatCubes(bubblesort_cubes);
-    }
-
-    public enum text
-    {
-        NO_HIGHLIGHT = 0,
-        N_LENARRAY,
-        FOR_I,
-        FOR_J,
-        IF,
-        SWAP = 5
     }
 }

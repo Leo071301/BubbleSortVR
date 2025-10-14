@@ -144,8 +144,7 @@ public class SelectionSortScript : MonoBehaviour
 
     void Start()
     {
-        // how to know which index is which? Set it up and check in the inspector
-        liveText.syncLiveText(0); // 0 is the index is the one that has no highlighting
+        liveText.syncLiveText((int)text.NO_HIGHLIGHT);
     }
 
 
