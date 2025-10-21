@@ -84,10 +84,14 @@ public class BubbleSortScript : MonoBehaviour
     public IEnumerator BubbleSortAnimation()
     {
         isAnimating = true;
+
+        
         
 
         yield return StartCoroutine(CubeUtility.AnimateSpawnCubes(bubblesort_cubes, this));
         yield return StartCoroutine(textPanel.SpawnIn());
+
+        yield return liveAudio.playNextAudio(0);
 
         //https://www.w3schools.com/dsa/dsa_algo_bubblesort.php
         int n = bubblesort_cubes.Count;
