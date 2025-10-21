@@ -407,6 +407,30 @@ public class CubeUtility : MonoBehaviour
         }
     }
 
+    public static void print(List<GameObject> cube_list)
+    {
+        string s = "DEBUG: ";
+        for (global::System.Int32 i = 0; i < cube_list.Count; i++)
+        {
+            s += " " + cube_list[i].name;
+        }
+        Debug.LogError(s);
+    }
+
+    public static void print(List<List<GameObject>> cube_list)
+    {
+        // DEBUG ONLY
+        for (int i = 0; i < cube_list.Count; i++)
+        {
+            string s = "DEBUG: ";
+            for (global::System.Int32 j = 0; j < cube_list[i].Count; j++)
+            {
+                s += " " + cube_list[i][j].name;    // fck
+            }
+            Debug.LogError(s);
+        }
+    }
+
 }
 
 // BIG Credit to Dev Log for this wonderfull Design Aspect regarding Co-Routines

@@ -44,9 +44,9 @@ public class AttentionArrow : MonoBehaviour
         const int SCALE = 1;
 #endif
 
-        transform.localScale = new Vector3 (    transform.localScale.x,
-                                                transform.localScale.y - ( ( Scale_Range / 100 * Mathf.Cos( Time.timeSinceLevelLoad / 5.0f) / SCALE) ),
-                                                transform.localScale.z);        
+        //transform.localScale = new Vector3 (    transform.localScale.x,
+        //                                        transform.localScale.y - ( ( Scale_Range / 100 * Mathf.Cos( Time.timeSinceLevelLoad / 5.0f) / SCALE) ),
+        //                                        transform.localScale.z);        
 
         transform.Rotate(new Vector3(0, Rotate_Range * ( Mathf.Sin( Time.timeSinceLevelLoad / 3.0f) / SCALE ), 0));
     }

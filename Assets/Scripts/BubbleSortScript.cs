@@ -43,6 +43,7 @@ public class BubbleSortScript : MonoBehaviour
         IF,
         SWAP = 5
     }
+
     void Start()
     {
         liveText.syncLiveTextWait((int)text.NO_HIGHLIGHT, 0.2f);
@@ -84,7 +85,7 @@ public class BubbleSortScript : MonoBehaviour
     public IEnumerator BubbleSortAnimation()
     {
         isAnimating = true;
-        
+
 
         yield return StartCoroutine(CubeUtility.AnimateSpawnCubes(bubblesort_cubes, this));
         yield return StartCoroutine(textPanel.SpawnIn());
