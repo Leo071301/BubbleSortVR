@@ -109,4 +109,14 @@ public class InsertionSortScript : MonoBehaviour
         }
         
     }
+
+    public enum audioClips
+    {
+        Audio1 = 0,
+        Audio2,
+        Audio3,
+        Audio4,
+        Audio5 = 5
+
+    }
 }
