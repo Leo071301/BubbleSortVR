@@ -125,22 +125,22 @@ public class CountSortScript : MonoBehaviour
             {                
 
                 countsort_cubes.Add(counting_list[i].First());  // get back the cube's reference. IN ORDER (sorted)
-                Debug.Log("HIT3      j_index is " + j.ToString() + " length of vectorlist: " + unsorted_vector_list.Count.ToString());
+                
 
                 // MOVE CUBE BACK
                 yield return CubeUtility.moveCube(
                     countsort_cubes.Last(),
                     unsorted_vector_list[j],
                     Cube_SPEED);
-                Debug.LogError("HIT3.5");
+                
 
                 counting_list[i].RemoveAt(0);  // POP
-                Debug.LogError("HIT4");
+                
 
                 j++;        // incriment!! Animation only
             }
         }
-        Debug.LogError("HIT5");
+        
 
         // Move back each cube in a Sorted Manner now!!!
 
