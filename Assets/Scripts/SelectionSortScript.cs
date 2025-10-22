@@ -34,10 +34,13 @@ public class SelectionSortScript : MonoBehaviour
     private bool    isAnimating = false;                       // dont want to run multiple animations over eachother
     GlowHandler     glowHandler;
 
+    private const float text_speed = 0.25f;
+
     // Coroutine performs the SelectionSort Animation
     public IEnumerator SelectionSortAnimation()
     {
         isAnimating = true;
+        liveText.syncLiveText((int)text.NO_HIGHLIGHT);
 
         yield return StartCoroutine(CubeUtility.AnimateSpawnCubes(selectionsort_cubes, this));
         yield return StartCoroutine(textPanel.SpawnIn());
@@ -51,16 +54,16 @@ public class SelectionSortScript : MonoBehaviour
         {
             glowHandler.ResetApplyGlowMaterial(selectionsort_cubes, selectionsort_cubes.Skip(i).ToList());
 
-            liveText.syncLiveTextWait((int)text.FOR_I,      0.5f);// wait 1/2 second
-            liveText.syncLiveTextWait((int)text.MIN_INDEX_I,0.25f);// wait 1/4 second
+            yield return liveText.syncLiveTextWait((int)text.FOR_I,         text_speed * 2);
+            yield return liveText.syncLiveTextWait((int)text.MIN_INDEX_I,   text_speed * 2);
 
             int min_index = i;
 
             for (int j = i + 1; j < n; j++)
             {
 
-                liveText.syncLiveTextWait((int)text.FOR_J,  0.3f);
-                liveText.syncLiveTextWait((int)text.IF,     0.3f);
+                yield return liveText.syncLiveTextWait((int)text.FOR_J,  text_speed);
+                yield return liveText.syncLiveTextWait((int)text.IF,     text_speed);
 
                 // Highlight two cubes being compared
                 StartCoroutine(CubeUtility.PulseHighlight(selectionsort_cubes[j], Check_Color, Check_TIME));
@@ -99,7 +102,7 @@ public class SelectionSortScript : MonoBehaviour
 
         }
 
-        liveText.syncLiveText(0);   // back to no text highlighting
+        liveText.syncLiveText((int)text.NO_HIGHLIGHT);
         glowHandler.ResetAllGlow(selectionsort_cubes);
 
         // cool finished-animation

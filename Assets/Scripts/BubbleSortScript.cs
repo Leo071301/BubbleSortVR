@@ -34,6 +34,8 @@ public class BubbleSortScript : MonoBehaviour
     private bool isAnimating = false;                       // dont want to run multiple animations over eachother
     GlowHandler glowHandler;                                // enables glowing effect of cube's of Your Choosing!
 
+    private const float text_speed = 0.25f;
+
     public enum text
     {
         NO_HIGHLIGHT = 0,
@@ -46,7 +48,7 @@ public class BubbleSortScript : MonoBehaviour
 
     void Start()
     {
-        liveText.syncLiveTextWait((int)text.NO_HIGHLIGHT, 0.2f);
+        liveText.syncLiveTextWait((int)text.NO_HIGHLIGHT, text_speed);
     }
 
 
@@ -86,9 +88,7 @@ public class BubbleSortScript : MonoBehaviour
     {
         isAnimating = true;
 
-        
-        
-
+        liveText.syncLiveText((int)text.NO_HIGHLIGHT);
         yield return StartCoroutine(CubeUtility.AnimateSpawnCubes(bubblesort_cubes, this));
         yield return StartCoroutine(textPanel.SpawnIn());
 
@@ -97,11 +97,11 @@ public class BubbleSortScript : MonoBehaviour
         //https://www.w3schools.com/dsa/dsa_algo_bubblesort.php
         int n = bubblesort_cubes.Count;
 
-        liveText.syncLiveTextWait((int)text.N_LENARRAY, 1.0f);  // 1 second wait
+        yield return liveText.syncLiveTextWait((int)text.N_LENARRAY, text_speed * 2);
 
         for (int i = 0; i < n - 1; i++)
         {
-            liveText.syncLiveTextWait((int)text.FOR_I, 0.2f);
+            yield return liveText.syncLiveTextWait((int)text.FOR_I, text_speed);
             
             for (int j = 0; j < n - i - 1; j++)
             {
@@ -109,8 +109,8 @@ public class BubbleSortScript : MonoBehaviour
                 glowHandler.ResetApplyGlowMaterial(bubblesort_cubes, bubblesort_cubes.Take(n-i).ToList());
 
 
-                liveText.syncLiveTextWait((int)text.FOR_J, 0.2f);
-                liveText.syncLiveText((int)text.IF);
+                yield return liveText.syncLiveTextWait((int)text.FOR_J, text_speed);
+                yield return liveText.syncLiveTextWait((int)text.IF,    text_speed);
 
                 // Highlight two cubes being compared
                 yield return StartCoroutine(CubeUtility.PulseHighlight(bubblesort_cubes[j], bubblesort_cubes[j + 1], Check_Color, Check_TIME));
@@ -119,7 +119,7 @@ public class BubbleSortScript : MonoBehaviour
                 if (int.Parse(bubblesort_cubes[j].name) >
                     int.Parse(bubblesort_cubes[j + 1].name))
                 {
-                    liveText.syncLiveTextWait((int)text.SWAP, 0.2f);
+                    yield return liveText.syncLiveTextWait((int)text.SWAP, text_speed);
 
                     // Highlight two cubes being swapped-dont wait for animation to finish
                     StartCoroutine(CubeUtility.PulseHighlight(bubblesort_cubes[j], bubblesort_cubes[j + 1], Swap_Color, Swap_TIME));

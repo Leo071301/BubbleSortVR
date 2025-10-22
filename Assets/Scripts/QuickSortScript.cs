@@ -105,6 +105,8 @@ public class QuickSortScript : MonoBehaviour
         yield return StartCoroutine(QuickSort(quicksort_cubes));
 
 
+        glowHandler.ApplyAllGlow(quicksort_cubes);
+
         // Move sorted list "back down" to starting y-axis
         foreach (var cube in quicksort_cubes)
         {
@@ -114,7 +116,7 @@ public class QuickSortScript : MonoBehaviour
             yield return StartCoroutine(CubeUtility.moveCube(cube, destination));   // move!
         }
 
-        glowHandler.ApplyAllGlow(quicksort_cubes);      // highlight from the start
+        glowHandler.ResetAllGlow(quicksort_cubes);      // remove glowing from all cubes
 
         // cool finished-animation
         foreach (var cube in quicksort_cubes)
