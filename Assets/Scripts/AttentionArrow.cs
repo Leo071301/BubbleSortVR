@@ -18,7 +18,7 @@ public class AttentionArrow : MonoBehaviour
     [SerializeField] public float Scale_Range = 0.2f;
 
     private int randomSEED;
-
+  
     private void Start()
     {
         // the "transform" variable is derived from "MonoBehaviour". I need to check if it exists 
