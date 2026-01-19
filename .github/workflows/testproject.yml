@@ -1,0 +1,59 @@
+name: Test Project
+
+on: 
+
+  workflow_dispatch: # workflow dispatch is for manual run from actions page
+  push: # on push
+    branches:    
+      - '**' 
+  pull_request: # on pull request
+    branches:    
+      - '**' 
+  
+  
+jobs:
+  testProject:
+    name: Test in ${{ matrix.testMode }}   # Run two tests, matrix variablesa defined below
+    runs-on: ubuntu-latest  # Run unity inside ubuntu via docker
+    strategy: # fail-fast: false tells the runner to attempt all jobs, even at failure.
+      fail-fast: false
+      # Matrix variables defined here
+      matrix:
+        # name of project folder or ./
+        projectPath:
+          - ./
+        testMode: # Unity modes to test out
+          - playmode
+          - editmode
+
+    steps:
+      - name: Checkout Code via git-LFS
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ matrix.projectPath }}/Library
+          key: Library-${{ matrix.projectPath }}
+          restore-keys: |
+            Library-
+      - name: Test Unity
+        uses: game-ci/unity-test-runner@v4
+        id: tests    # Assign an ID to this runner. This way we can reference output' and results from this:
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: ${{ matrix.projectPath }}     # variable defined before
+          testMode: ${{ matrix.testMode }}
+          artifactsPath: ${{ matrix.testMode }}-artifacts
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: ${{ matrix.testMode }} Test Results          
+      - name: Upload as Artifact         # Share results with other jobs!
+        uses: actions/upload-artifact@v4
+        if: always()    # Always invoke
+        with:
+          name: Test results for ${{ matrix.testMode }}
+          path: ${{ steps.tests.outputs.artifactsPath }}
