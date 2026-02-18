@@ -15,9 +15,10 @@ MonoBehaviour:
   version: 1
   sku: 6709588ad8015e3c2bb9484c
   packageName: Leo's Spatial Island Trigger Test
-  thumbnail: {fileID: 2800000, guid: 8556be473992b42dbb7035908e118623, type: 3}
+  thumbnail: {fileID: 2800000, guid: b0c9e1745d03d454ab91b0c84bd6b998, type: 3}
   savedProjectSettings: {fileID: 11400000, guid: b4d3f3931508d4e3381693ee23f6fe04,
     type: 2}
+  teamID: 
   worldID: qfrvg3fhip1i5ivtv5a6c
   scene: {fileID: 102900000, guid: 99c9720ab356a0642a771bea13969a05, type: 3}
   csharpAssembly: {fileID: 0}
