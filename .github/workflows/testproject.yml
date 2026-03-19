@@ -1,4 +1,4 @@
-name: Test Project
+name: Test and Build
 
 on: 
 
@@ -12,7 +12,7 @@ on:
   
   
 jobs:
-  testProject:
+  testUnity:
     name: Test in ${{ matrix.testMode }}   # Run two tests, matrix variablesa defined below
     runs-on: ubuntu-latest  # Run unity inside ubuntu via docker
     strategy: # fail-fast: false tells the runner to attempt all jobs, even at failure.
@@ -25,6 +25,7 @@ jobs:
         testMode: # Unity modes to test out
           - playmode
           - editmode
+          - standalone
 
     steps:
       - name: Checkout Code via git-LFS
@@ -46,6 +47,7 @@ jobs:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
+          #unityVersion: 2021.3.44f
           projectPath: ${{ matrix.projectPath }}     # variable defined before
           testMode: ${{ matrix.testMode }}
           artifactsPath: ${{ matrix.testMode }}-artifacts
@@ -57,3 +59,35 @@ jobs:
         with:
           name: Test results for ${{ matrix.testMode }}
           path: ${{ steps.tests.outputs.artifactsPath }}
+
+
+  AttemptPublishToSpacial:
+    needs: testUnity
+    name: Test comand line functions
+
+    runs-on: ubuntu-latest  # Run unity inside ubuntu via docker
+    container: unityci/editor:ubuntu-2021.3.44f1-webgl-3.2.1
+    env:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: run bash script
+        id: bash-script # Identifier
+        run: |
+          ls -l
+          pwd
+          timeout 18m unity-editor -batchmode -username ${{ secrets.UNITY_EMAIL }} -password ${{ secrets.UNITY_PASSWORD }} -serial ${{ secrets.UNITY_SERIAL }} -projectPath . -quit -executeMethod SpatialSys.UnitySDK.Editor.BuildUtility.BuildAndPublishPackage -logfile log.txt 
+          
+      - name: Upload as Artifact         # Share results with other jobs!
+        uses: actions/upload-artifact@v4
+        if: always()    # Always invoke
+        with:
+          name: Unity Log File
+          path: ./log.txt
+          compression-level: 0 
