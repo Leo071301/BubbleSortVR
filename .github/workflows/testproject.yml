@@ -53,12 +53,13 @@ jobs:
           artifactsPath: ${{ matrix.testMode }}-artifacts
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: ${{ matrix.testMode }} Test Results          
-      - name: Upload as Artifact         # Share results with other jobs!
-        uses: actions/upload-artifact@v4
-        if: always()    # Always invoke
-        with:
-          name: Test results for ${{ matrix.testMode }}
-          path: ${{ steps.tests.outputs.artifactsPath }}
+      # ignoring because i dont have CICD write permissions yet
+      #- name: Upload as Artifact         # Share results with other jobs!
+      #  uses: actions/upload-artifact@v4
+      #  if: always()    # Always invoke
+      #  with:
+      #    name: Test results for ${{ matrix.testMode }}
+      #    path: ${{ steps.tests.outputs.artifactsPath }}
 
 
   AttemptPublishToSpacial:
@@ -82,7 +83,9 @@ jobs:
         run: |
           ls -l
           pwd
-          timeout 18m unity-editor -batchmode -username ${{ secrets.UNITY_EMAIL }} -password ${{ secrets.UNITY_PASSWORD }} -serial ${{ secrets.UNITY_SERIAL }} -projectPath . -quit -executeMethod SpatialSys.UnitySDK.Editor.BuildUtility.BuildAndPublishPackage -logfile log.txt 
+          chmod +x linux_workflow.sh
+          echo "Excecuting bash script......"
+          ./linux_workflow.sh
           
       - name: Upload as Artifact         # Share results with other jobs!
         uses: actions/upload-artifact@v4
