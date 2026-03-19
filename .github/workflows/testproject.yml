@@ -50,7 +50,8 @@ jobs:
           #unityVersion: 2021.3.44f
           projectPath: ${{ matrix.projectPath }}     # variable defined before
           testMode: ${{ matrix.testMode }}
-          artifactsPath: ${{ matrix.testMode }}-artifacts
+          # comented out because i lack CICD write permissions rn
+          #artifactsPath: ${{ matrix.testMode }}-artifacts
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: ${{ matrix.testMode }} Test Results          
       # ignoring because i dont have CICD write permissions yet
