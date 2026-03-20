@@ -79,6 +79,7 @@ jobs:
         with:
           lfs: true
 
+
       - name: run bash script
         id: bash-script # Identifier
         run: |
