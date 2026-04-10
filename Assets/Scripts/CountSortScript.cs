@@ -17,6 +17,7 @@ public class CountSortScript : MonoBehaviour
     [SerializeField] public Transform counting_list_pos;   // This is the position where cubes will be moved and sorted
 
     [SerializeField] public Color default_color;    // initialize default color 
+    [SerializeField] public Color Good_Color;
     [SerializeField] public Material material;      // pass in URP shader since spatial SDK does not give it material when cubes are spontaneously made 
     [SerializeField] public Material material_glow;
 
@@ -25,20 +26,28 @@ public class CountSortScript : MonoBehaviour
     [NonSerialized]
     private List<GameObject> countsort_cubes = null;// list of cubes made, positioned, and programmed
     private bool isAnimating = false;               // boolean that will check to make sure multiple animations are not going over each other
-    private const float text_speed = 0.2f;
+    private const float text_speed = 1f;
 
     private GlowHandler glowHandler;                // enables glowing effect of cube's of Your Choosing!
 
 
     public enum text
     {
-        NO_HIGHLIGHT = 0
+        NO_HIGHLIGHT = 0,
+        MAX_VAL,
+        COUNT_EQUALS,
+        FOR_NUM_IN,
+        COUNT_INDEX,
+        ARR,
+        FOR_NUM_FREQ,
+        ARR_EXT
+
     }
 
     void Start()
     {
 
-        //liveText.syncLiveText((int)text.NO_HIGHLIGHT);
+        liveText.syncLiveText((int)text.NO_HIGHLIGHT);
     }
 
     void Update()
@@ -87,8 +96,13 @@ public class CountSortScript : MonoBehaviour
          *    BEGIN ANIMATION
          ***********************/
 
+        yield return StartCoroutine(CubeUtility.AnimateSpawnCubes(countsort_cubes, this));
+        StartCoroutine(textPanel.SpawnIn());
+
         // for max value, im going to simply utilize number_list. Makes things simple
         int max_val = number_list.Max();
+        yield return liveText.syncLiveTextWait((int)text.MAX_VAL, text_speed / 2);
+
 
         // 2D list, set capaity equal to the highest integer value found in the list
         List<List<GameObject>> counting_list = new List<List<GameObject>>(max_val + 1);
@@ -96,10 +110,11 @@ public class CountSortScript : MonoBehaviour
         {
             counting_list.Add(new List<GameObject>());      // INITIALIZE
         }
-
+        yield return liveText.syncLiveTextWait((int)text.COUNT_EQUALS, text_speed / 2);
 
         while (countsort_cubes.Count > 0)
         {
+            yield return liveText.syncLiveTextWait((int)text.FOR_NUM_IN, text_speed / 3);
 
             GameObject cube_to_move = countsort_cubes.Last();   // REFERENCE
             int value = int.Parse(cube_to_move.name);
@@ -107,6 +122,7 @@ public class CountSortScript : MonoBehaviour
             // pass reference
             counting_list.ElementAt(value).Add(cube_to_move);
 
+            liveText.syncLiveText((int)text.COUNT_INDEX);
             // move cube to the 2D list respectivley
             yield return moveTo2DCountingList(
                 cube_to_move,
@@ -117,15 +133,19 @@ public class CountSortScript : MonoBehaviour
             countsort_cubes.RemoveAt(countsort_cubes.Count - 1);    // remove last element
         }
 
+        yield return liveText.syncLiveTextWait((int)text.ARR, text_speed / 2);
+
 
         int j = 0;
         for (int i = 0; i < counting_list.Count; i++)
         {
+            yield return liveText.syncLiveTextWait((int)text.FOR_NUM_FREQ, text_speed / 2);
             while (counting_list[i].Count > 0)
             {                
 
                 countsort_cubes.Add(counting_list[i].First());  // get back the cube's reference. IN ORDER (sorted)
-                
+
+                yield return liveText.syncLiveTextWait((int)text.ARR_EXT, text_speed / 3);
 
                 // MOVE CUBE BACK
                 yield return CubeUtility.moveCube(
@@ -140,12 +160,22 @@ public class CountSortScript : MonoBehaviour
                 j++;        // incriment!! Animation only
             }
         }
-        
+        /* * * * * * * * * *  * * * * * * 
+         *  Animation has Finished Here!
+         * * * * * * * * * * * * * * * * */
 
-        // Move back each cube in a Sorted Manner now!!!
+        // cool finished-animation
+        foreach (var cube in countsort_cubes)
+        {
+            StartCoroutine(CubeUtility.PulseHighlight(cube, Good_Color, 1.0f));
+            yield return new WaitForSeconds(0.15f);
+        }
 
-        yield return null;
+        yield return StartCoroutine(CubeUtility.AnimateDestroyCubes(countsort_cubes, this));
+        liveText.syncLiveText((int)text.NO_HIGHLIGHT);
+        yield return StartCoroutine(textPanel.Despawn());
 
+        countsort_cubes = null;     // very importaint
         isAnimating = false;
     }
 

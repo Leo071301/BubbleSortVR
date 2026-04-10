@@ -137,27 +137,27 @@ public class QuickSortScript : MonoBehaviour
     // Animtion include: syncing text, audio, glow, cube-movements, and the sorting animation
     public IEnumerator QuickSort(List<GameObject> list, int low = 0, int high = -1) // -1 because C# doesent have the "none" type
     {
-        liveText.syncLiveTextWait((int)text.FUNCTION_PARTITION,     text_speed / 2);
-        liveText.syncLiveTextWait((int)text.IF_HIGH_IS_NONE,        text_speed);
+        yield return liveText.syncLiveTextWait((int)text.FUNCTION_PARTITION,     text_speed / 2);
+        yield return liveText.syncLiveTextWait((int)text.IF_HIGH_IS_NONE,        text_speed);
         if (high == -1) 
         {
             high = list.Count - 1;
-            liveText.syncLiveTextWait((int)text.HIGH_EQUALS,        text_speed);
+            yield return liveText.syncLiveTextWait((int)text.HIGH_EQUALS, text_speed);
         }
 
         glowHandler.ResetApplyGlowMaterial(quicksort_cubes, list.Skip(low).Take(high-low + 1).ToList());  // glow sub-list
 
-        liveText.syncLiveTextWait((int)text.IF_LOW_SMALLER_HIGH,    text_speed);
+        yield return liveText.syncLiveTextWait((int)text.IF_LOW_SMALLER_HIGH, text_speed);
         if (low < high)
         {
-            liveText.syncLiveTextWait((int)text.PIVOT_INDEX_EQUALS, text_speed);
+            yield return liveText.syncLiveTextWait((int)text.PIVOT_INDEX_EQUALS, text_speed);
             yield return StartCoroutine(Partition(list, low, high));
             int pivot_inex = return_value;
 
-            liveText.syncLiveTextWait((int)text.QUICKSORT_ARRAY_LOW,            text_speed);
+            yield return liveText.syncLiveTextWait((int)text.QUICKSORT_ARRAY_LOW, text_speed);
             yield return StartCoroutine(QuickSort(quicksort_cubes, low, pivot_inex - 1));
 
-            liveText.syncLiveTextWait((int)text.QUICKSORT_ARRAY_PIVOT_INDEX,    text_speed);
+            yield return liveText.syncLiveTextWait((int)text.QUICKSORT_ARRAY_PIVOT_INDEX, text_speed);
             yield return StartCoroutine(QuickSort(quicksort_cubes, pivot_inex + 1, high));
 
         }
@@ -166,7 +166,7 @@ public class QuickSortScript : MonoBehaviour
 
     public IEnumerator Partition(List<GameObject> list, int low, int high)
     {
-        liveText.syncLiveTextWait((int)text.FUNCTION_PARTITION,     text_speed);
+        yield return liveText.syncLiveTextWait((int)text.FUNCTION_PARTITION, text_speed);
         // Note:
         // Prior to aniomation, move the sub-list of cubes "up" a layer (Y-axis). 1.3 Units
         foreach (var cube in list.Skip(low).Take(high - low + 1).ToList())
@@ -179,23 +179,23 @@ public class QuickSortScript : MonoBehaviour
 
         glowHandler.ResetApplyGlowMaterial(quicksort_cubes, list.Skip(low).Take(high - low + 1).ToList());  // glow sub-list
 
-        liveText.syncLiveTextWait((int)text.PIVOT_ARRAY,            text_speed);
+        yield return liveText.syncLiveTextWait((int)text.PIVOT_ARRAY, text_speed);
         int pivot = int.Parse(list[high].name); // to int
 
-        liveText.syncLiveTextWait((int)text.I_EQUALS_LOW,           text_speed);
+        yield return liveText.syncLiveTextWait((int)text.I_EQUALS_LOW, text_speed);
         int i = low - 1;
 
-        liveText.syncLiveTextWait((int)text.FOR_J,                  text_speed);
+        yield return liveText.syncLiveTextWait((int)text.FOR_J, text_speed);
         for (int j = low; j < high; j++)
         {
-            liveText.syncLiveTextWait((int)text.IF_ARRAY_J,         text_speed);
+            yield return liveText.syncLiveTextWait((int)text.IF_ARRAY_J, text_speed);
             yield return StartCoroutine(CubeUtility.PulseHighlight(list[j], list[pivot], Check_Color, Check_TIME));
             if ( int.Parse(list[j].name) <= pivot ) // to int
             {
-                liveText.syncLiveTextWait((int)text.I_PLUS_EQUALS,  text_speed);
+                yield return liveText.syncLiveTextWait((int)text.I_PLUS_EQUALS, text_speed);
                 i++;
 
-                liveText.syncLiveTextWait((int)text.ARRAY_SWAP,     text_speed);
+                yield return liveText.syncLiveTextWait((int)text.ARRAY_SWAP, text_speed);
                 // swap animation
                 yield return StartCoroutine(CubeUtility.swapCubesVertically(list, i, j, this));
                 
@@ -207,10 +207,10 @@ public class QuickSortScript : MonoBehaviour
 
         }
 
-        liveText.syncLiveTextWait((int)text.ARRAY_SWAP_I_PLUS_ONE,  text_speed);
+        yield return liveText.syncLiveTextWait((int)text.ARRAY_SWAP_I_PLUS_ONE, text_speed);
         // swap animation
         yield return StartCoroutine(CubeUtility.swapCubesVertically(list, high, i+1, this));
-        liveText.syncLiveTextWait((int)text.RETURN_I_PLUS_ONE,      text_speed);
+        yield return liveText.syncLiveTextWait((int)text.RETURN_I_PLUS_ONE, text_speed);
 
 
         // Fast C# Swap
