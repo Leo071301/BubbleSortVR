@@ -91,17 +91,19 @@ public class BubbleSortScript : MonoBehaviour
         yield return StartCoroutine(CubeUtility.AnimateSpawnCubes(bubblesort_cubes, this));
         yield return StartCoroutine(textPanel.SpawnIn());
 
-        yield return liveAudio.playNextAudio(0);
+        //yield return liveAudio.playNextAudio(0);
 
         //https://www.w3schools.com/dsa/dsa_algo_bubblesort.php
         int n = bubblesort_cubes.Count;
 
         yield return liveText.syncLiveTextWait((int)text.N_LENARRAY, text_speed * 2);
+        yield return liveAudio.playNextAudio(1);
 
         for (int i = 0; i < n - 1; i++)
         {
             yield return liveText.syncLiveTextWait((int)text.FOR_I, text_speed);
-            
+            yield return liveAudio.playNextAudio(2);
+
             for (int j = 0; j < n - i - 1; j++)
             {
                 // highlight the cube's to be sorted! Will leave sorted cube's un-highlighted
@@ -109,7 +111,9 @@ public class BubbleSortScript : MonoBehaviour
 
 
                 yield return liveText.syncLiveTextWait((int)text.FOR_J, text_speed);
+                yield return liveAudio.playNextAudio(3);
                 yield return liveText.syncLiveTextWait((int)text.IF,    text_speed);
+                yield return liveAudio.playNextAudio(4);
 
                 // Highlight two cubes being compared
                 yield return StartCoroutine(CubeUtility.PulseHighlight(bubblesort_cubes[j], bubblesort_cubes[j + 1], Check_Color, Check_TIME));
@@ -119,6 +123,7 @@ public class BubbleSortScript : MonoBehaviour
                     int.Parse(bubblesort_cubes[j + 1].name))
                 {
                     yield return liveText.syncLiveTextWait((int)text.SWAP, text_speed);
+                    //yield return liveAudio.playNextAudio(5);
 
                     // Highlight two cubes being swapped-dont wait for animation to finish
                     StartCoroutine(CubeUtility.PulseHighlight(bubblesort_cubes[j], bubblesort_cubes[j + 1], Swap_Color, Swap_TIME));

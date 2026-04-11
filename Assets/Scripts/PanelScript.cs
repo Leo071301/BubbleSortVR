@@ -13,7 +13,7 @@ public class PanelScript : MonoBehaviour
     [NonSerialized]
     private Vector3 visible_scale;
     private Vector3 invisible_scale = Vector3.zero;
-    private const float speed = 5.0f;
+    private const float speed = 5.0f; 
 
     void Start()
     {
